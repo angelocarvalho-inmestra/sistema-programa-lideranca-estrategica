@@ -1,0 +1,1950 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Inmestra – Programa Liderança Estratégica</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:#0D2B55;min-height:100vh}
+:root{
+  --navy:#0D2B55;--navymid:#1A3A6B;--blue:#2563EB;--bluel:#EFF6FF;
+  --gold:#F59E0B;--goldl:#FEF3C7;--green:#10B981;--greenl:#D1FAE5;
+  --teal:#0D9488;--orange:#F97316;--purple:#7C3AED;--purplel:#EDE9FE;
+  --red:#EF4444;--redl:#FEE2E2;--gray:#64748B;--grayl:#E2E8F0;--graybg:#F8FAFC;
+}
+/* LOGIN */
+#login-screen{min-height:100vh;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#0D2B55,#1A3A6B)}
+.login-box{background:#fff;border-radius:20px;padding:40px 44px;width:380px;box-shadow:0 24px 60px rgba(0,0,0,.3)}
+.login-logo{color:var(--navy);font-size:22px;font-weight:900;letter-spacing:1px;margin-bottom:4px}
+.login-sub{color:var(--gray);font-size:12px;margin-bottom:28px}
+.login-role-tabs{display:flex;gap:4px;background:var(--graybg);border-radius:10px;padding:4px;margin-bottom:24px}
+.login-role-tab{flex:1;padding:7px 0;text-align:center;font-size:12px;font-weight:700;border:none;background:transparent;border-radius:7px;cursor:pointer;color:var(--gray);transition:all .2s}
+.login-role-tab.active{background:var(--navy);color:#fff}
+.login-inp{width:100%;border:1.5px solid var(--grayl);border-radius:10px;padding:11px 14px;font-size:14px;margin-bottom:12px;font-family:inherit;outline:none;transition:border .2s;color:#0D2B55}
+.login-inp:focus{border-color:var(--blue)}
+.login-btn{width:100%;background:var(--navy);color:#fff;border:none;border-radius:10px;padding:13px;font-size:14px;font-weight:700;cursor:pointer}
+.login-btn:hover{background:var(--blue)}
+.login-err{color:var(--red);font-size:12px;margin-top:8px;text-align:center;min-height:18px}
+/* APP */
+#app{display:none;flex-direction:column;height:100vh;overflow:hidden;background:var(--graybg)}
+.header{background:var(--navy);height:58px;flex-shrink:0;display:flex;align-items:center;padding:0 20px;gap:12px;z-index:100;box-shadow:0 2px 8px rgba(0,0,0,.2)}
+.header-logo{color:var(--gold);font-weight:900;font-size:16px;letter-spacing:.5px;line-height:1}
+.header-sub{font-size:9px;color:#7898C0;letter-spacing:1.5px;display:block;margin-top:1px}
+.header-pill{background:rgba(255,255,255,.1);color:#fff;font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px}
+.header-user{margin-left:auto;display:flex;align-items:center;gap:10px}
+.hav{width:32px;height:32px;border-radius:50%;background:var(--gold);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;color:var(--navy)}
+.header-name{color:#fff;font-size:12px;font-weight:600}
+.logout-btn{background:rgba(255,255,255,.1);border:none;color:#fff;font-size:11px;padding:5px 10px;border-radius:6px;cursor:pointer}
+.nav-bar{background:#1A3A6B;padding:0 20px;display:flex;gap:2px;overflow-x:auto;flex-shrink:0;z-index:99}
+.nav-btn{padding:10px 16px;background:transparent;border:none;color:#7898C0;font-size:12px;font-weight:700;cursor:pointer;border-bottom:3px solid transparent;white-space:nowrap;transition:all .2s}
+.nav-btn.active{color:var(--gold);border-bottom-color:var(--gold)}
+.nav-btn:hover:not(.active){color:#fff}
+.nav-sep{font-size:9px;color:#4A6080;letter-spacing:2px;padding:14px 12px 4px;font-weight:700;text-transform:uppercase;cursor:default}
+.body{padding:20px;max-width:1300px;margin:0 auto;flex:1;overflow-y:auto;overflow-x:hidden}
+/* CARDS */
+.card{background:#fff;border-radius:14px;box-shadow:0 2px 10px rgba(0,0,0,.06);padding:20px;margin-bottom:16px}
+.sec-title{font-size:13px;font-weight:800;color:var(--navy);display:flex;align-items:center;gap:6px;margin-bottom:14px}
+.stat-card{background:#fff;border-radius:12px;box-shadow:0 2px 8px rgba(0,0,0,.05);padding:14px 16px;flex:1;min-width:100px}
+.slbl{font-size:10px;color:var(--gray);font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:4px}
+.sval{font-size:26px;font-weight:800;line-height:1.1}
+.ssub{font-size:10px;color:var(--gray);margin-top:3px}
+/* BUTTONS */
+.btn{border:none;border-radius:8px;padding:7px 14px;font-size:12px;font-weight:700;cursor:pointer;transition:opacity .15s;font-family:inherit}
+.btn:hover{opacity:.85}
+.btn-gold{background:var(--gold);color:var(--navy)}
+.btn-blue{background:var(--bluel);color:var(--blue)}
+.btn-green{background:var(--greenl);color:var(--green)}
+.btn-red{background:var(--redl);color:var(--red)}
+.btn-gray{background:var(--grayl);color:var(--gray)}
+.btn-navy{background:var(--navy);color:#fff}
+.btn-teal{background:#CCFBF1;color:#0D9488}
+.btn-sm{padding:4px 10px;font-size:11px}
+/* BADGES */
+.badge{font-size:11px;font-weight:700;padding:2px 8px;border-radius:20px;white-space:nowrap;display:inline-block}
+.bp1{background:#DBEAFE;color:#1D4ED8}
+.bp2{background:#D1FAE5;color:#065F46}
+.bp3{background:#FEF3C7;color:#92400E}
+.bp4{background:#EDE9FE;color:#5B21B6}
+/* FORM */
+.inp{border:1.5px solid var(--grayl);border-radius:8px;padding:9px 12px;font-size:13px;width:100%;outline:none;font-family:inherit;background:#fff;transition:border .15s;color:#0D2B55}
+.inp:focus{border-color:var(--blue)}
+.lbl{font-size:11px;font-weight:700;color:var(--gray);margin-bottom:4px;display:block;text-transform:uppercase;letter-spacing:.4px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.flex-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+/* TABLE */
+.tbl-wrap{overflow-x:auto}
+table.data{width:100%;border-collapse:collapse;font-size:12px}
+table.data th{padding:9px 10px;text-align:left;font-weight:700;font-size:10px;letter-spacing:.5px;background:var(--navy);color:#fff;white-space:nowrap}
+table.data td{padding:9px 10px;border-bottom:1px solid var(--grayl);vertical-align:middle}
+table.data tr:nth-child(even) td{background:var(--graybg)}
+/* PROGRESS */
+.pb-wrap{background:var(--grayl);border-radius:99px;overflow:hidden}
+.pb-fill{height:100%;border-radius:99px;transition:width .4s}
+/* MODAL */
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:200;display:none;align-items:center;justify-content:center;padding:16px}
+.overlay.open{display:flex}
+.modal{background:#fff;border-radius:18px;padding:28px;width:min(96vw,660px);max-height:92vh;overflow-y:auto;box-shadow:0 24px 60px rgba(0,0,0,.25)}
+.modal-lg{width:min(96vw,800px)}
+.modal-title{font-size:18px;font-weight:800;color:var(--navy);margin-bottom:4px}
+.modal-sub{font-size:12px;color:var(--gray);margin-bottom:20px}
+.modal-footer{display:flex;gap:10px;margin-top:20px;padding-top:16px;border-top:1px solid var(--grayl)}
+/* STATUS CHIPS */
+.chip{font-size:11px;font-weight:700;padding:3px 9px;border-radius:12px;white-space:nowrap;display:inline-block}
+/* BADGES SPECIAL */
+.badge-proj{background:#0D2B5515;color:var(--navy);border:1px solid #0D2B5530;font-size:10px;font-weight:700;padding:2px 7px;border-radius:10px}
+.badge-lead{background:#F59E0B20;color:#92400E;border:1px solid #F59E0B40;font-size:10px;font-weight:700;padding:2px 7px;border-radius:10px}
+.badge-cont{font-size:10px;font-weight:700;padding:2px 7px;border-radius:8px;background:#0D948820;color:#065F46;border:1px solid #0D948840}
+.phase-badge{font-size:10px;font-weight:800;padding:2px 6px;border-radius:5px;background:#1A3A6B;color:#fff;white-space:nowrap}
+/* OCCURRENCE BADGES */
+.occ-overdue{background:#FEE2E2;border:1px solid #FCA5A5;border-radius:8px;padding:6px 10px;font-size:11px;color:#991B1B;display:flex;align-items:center;gap:6px}
+.occ-current{background:#FFFBEB;border:1px solid #FDE68A;border-radius:8px;padding:6px 10px;font-size:11px;color:#92400E;display:flex;align-items:center;gap:6px}
+.occ-done{background:#F0FDF4;border:1px solid #BBF7D0;border-radius:8px;padding:6px 10px;font-size:11px;color:#065F46;display:flex;align-items:center;gap:6px}
+.occ-future{background:#F8FAFC;border:1px solid #E2E8F0;border-radius:8px;padding:6px 10px;font-size:11px;color:#475569;display:flex;align-items:center;gap:6px}
+/* LEADER TASK CARDS */
+.task-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px}
+.ltask{border-radius:12px;background:#fff;border:1.5px solid var(--grayl);overflow:hidden;cursor:pointer;transition:border-color .15s,box-shadow .15s;display:flex;flex-direction:column}
+.ltask:hover{border-color:var(--blue);box-shadow:0 4px 16px rgba(37,99,235,.12)}
+.ltask.st-done{border-color:#10B981}.ltask.st-review{border-color:#7C3AED}.ltask.st-prog{border-color:#F59E0B}
+.ltask-hd{padding:12px 14px 10px;flex:1}
+.ltask-ft{padding:8px 14px;border-top:1px solid var(--grayl);background:var(--graybg);display:flex;align-items:center;gap:8px}
+/* RECURRENCE TIMELINE */
+.rec-timeline{display:flex;flex-direction:column;gap:4px;margin-top:8px}
+.rec-occ{display:flex;align-items:center;gap:8px;padding:5px 8px;border-radius:7px;font-size:11px;cursor:pointer;transition:background .1s}
+.rec-occ:hover{background:#F1F5F9}
+.rec-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+/* SECTION DIVIDER */
+.sdiv{font-size:9px;color:var(--gray);font-weight:700;letter-spacing:2px;text-transform:uppercase;padding:5px 0;border-bottom:1px solid var(--grayl);margin-bottom:10px}
+.av{width:26px;height:26px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;color:#fff;flex-shrink:0}
+/* EVIDENCE FILE PREVIEW */
+.file-prev{background:var(--bluel);border:1px solid #BFDBFE;border-radius:8px;padding:10px 12px;margin-bottom:10px;display:flex;align-items:center;gap:10px}
+/* LEADER TASK PANEL IN ACTION MODAL */
+.lt-panel{background:#F8FAFC;border:1.5px solid var(--grayl);border-radius:12px;padding:16px;margin-bottom:14px;transition:all .2s}
+.lt-panel.on{background:#FFFBEB;border-color:#F59E0B}
+/* RECURRENCE BOARD CARD */
+.rec-board-card{background:#fff;border-radius:10px;border:1px solid var(--grayl);padding:10px 12px;margin-bottom:6px;display:flex;align-items:center;gap:10px;cursor:pointer;transition:border-color .15s}
+.rec-board-card:hover{border-color:var(--blue)}
+/* MISSING occurrences alert */
+.missed-count{background:#FEE2E2;color:#991B1B;font-size:10px;font-weight:700;padding:1px 6px;border-radius:10px}
+/* GANTT label */
+.gl{font-size:11px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.6}}
+@media(max-width:700px){.grid2,.grid3,.grid4{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="login-screen">
+  <div class="login-box">
+    <div class="login-logo">INMESTRA</div>
+    <div class="login-sub">Programa Liderança Estratégica</div>
+    <div class="login-role-tabs">
+      <button class="login-role-tab active" onclick="setLR('equipe',this)">Equipe Projeto</button>
+      <button class="login-role-tab" onclick="setLR('lider',this)">Líder</button>
+    </div>
+    <input class="login-inp" type="text" id="lu" placeholder="Usuário"/>
+    <input class="login-inp" type="password" id="lp" placeholder="Senha"/>
+    <button class="login-btn" onclick="doLogin()">Entrar</button>
+    <div class="login-err" id="lerr"></div>
+    <div style="margin-top:14px;font-size:11px;color:var(--gray);text-align:center;line-height:1.9">
+      <b>Equipe:</b> gestor/123 · consultor/123 · rh/123
+    </div>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="app" style="display:none;flex-direction:column;min-height:100vh">
+  <div class="header">
+    <div><div class="header-logo">INMESTRA<span class="header-sub">LIDERANÇA ESTRATÉGICA</span></div></div>
+    <div id="h-pill" class="header-pill"></div>
+    <div id="h-stats" style="font-size:11px;color:#9AB0CC;font-weight:700"></div>
+    <div class="header-user">
+      <div class="hav" id="h-av">?</div>
+      <span class="header-name" id="h-name"></span>
+      <button class="logout-btn" onclick="doLogout()">Sair</button>
+    </div>
+  </div>
+  <div class="nav-bar" id="nav-bar"></div>
+  <div class="body" id="body"></div>
+</div>
+
+<!-- MODALS -->
+<div class="overlay" id="m-action"><div class="modal modal-lg" id="m-action-i"></div></div>
+<div class="overlay" id="m-task"><div class="modal modal-lg" id="m-task-i"></div></div>
+<div class="overlay" id="m-ltask"><div class="modal modal-lg" id="m-ltask-i"></div></div>
+
+<script>
+// ═══════════════════════════════════════════════════════
+// CONFIG
+// ═══════════════════════════════════════════════════════
+const PILLARS={
+  P1:{id:'P1',label:'Desenvolvimento',color:'#2563EB',bg:'#DBEAFE',icon:'🎓'},
+  P2:{id:'P2',label:'Indicadores',color:'#10B981',bg:'#D1FAE5',icon:'📊'},
+  P3:{id:'P3',label:'Processos',color:'#F97316',bg:'#FEF3C7',icon:'⚙️'},
+  P4:{id:'P4',label:'Ferramentas',color:'#7C3AED',bg:'#EDE9FE',icon:'🛠️'},
+};
+const PIDS=['P1','P2','P3','P4'];
+const PHASES=[
+  {id:'F1',label:'Fase 1 – Maio'},{id:'F2',label:'Fase 2 – Junho'},
+  {id:'F3',label:'Fase 3 – Julho'},{id:'F4',label:'Fase 4 – Agosto'},
+  {id:'F5',label:'Fase 5 – Setembro'},{id:'F6',label:'Fase 6 – Outubro'},
+  {id:'F7',label:'Fase 7 – Novembro'},{id:'F8',label:'Fase 8 – Dezembro'},
+];
+const ST={
+  'Não iniciada':{c:'#94A3B8',bg:'#F1F5F9',dot:'⬜'},
+  'Em andamento':{c:'#F59E0B',bg:'#FEF3C7',dot:'🟡'},
+  'Concluída':{c:'#10B981',bg:'#D1FAE5',dot:'🟢'},
+  'Atrasada':{c:'#EF4444',bg:'#FEE2E2',dot:'🔴'},
+  'Em espera':{c:'#7C3AED',bg:'#EDE9FE',dot:'🟣'},
+};
+const LST={
+  'Não iniciada'       :{c:'#94A3B8',bg:'#F1F5F9',dot:'⬜'},
+  'Em andamento'       :{c:'#F59E0B',bg:'#FEF3C7',dot:'🟡'},
+  'Aguardando aprovação':{c:'#7C3AED',bg:'#EDE9FE',dot:'📋'},
+  'Em revisão'         :{c:'#F97316',bg:'#FFF7ED',dot:'↩'},
+  'Concluído'          :{c:'#10B981',bg:'#D1FAE5',dot:'✅'},
+  'Aprovado'           :{c:'#10B981',bg:'#D1FAE5',dot:'✅'}, // legacy alias
+  'Não realizada'      :{c:'#EF4444',bg:'#FEE2E2',dot:'❌'},
+};
+// Occurrence states for recurring tasks
+// open=window active progress=0, progress=1-99 in-progress, waiting=sent for approval
+// revision=rejected back to leader, approved=done, missed=window closed, pending=future
+const OST={
+  'open'    :{c:'#94A3B8',bg:'#F1F5F9',label:'Não iniciada',dot:'⬜'},
+  'progress':{c:'#F59E0B',bg:'#FEF3C7',label:'Em andamento',dot:'🟡'},
+  'waiting' :{c:'#7C3AED',bg:'#EDE9FE',label:'Aguardando aprovação',dot:'📋'},
+  'revision':{c:'#F97316',bg:'#FFF7ED',label:'Em revisão',dot:'↩'},
+  'approved':{c:'#10B981',bg:'#D1FAE5',label:'Concluído',dot:'✅'},
+  'missed'  :{c:'#EF4444',bg:'#FEE2E2',label:'Não realizada',dot:'❌'},
+  'pending' :{c:'#94A3B8',bg:'#F8FAFC',label:'Pendente',dot:'🔲'},
+};
+const TEAM=['Gestor','Consultor','RH'];
+const P_END='2026-12-31';
+const P_START='2026-05-01';
+// ALWAYS call dynamically — never cache
+function getToday(){return new Date().toISOString().slice(0,10);}
+
+// ═══════════════════════════════════════════════════════
+// RECURRENCE ENGINE
+// ═══════════════════════════════════════════════════════
+/*
+  PERIOD LOGIC:
+  Each occurrence has a WINDOW: [periodStart, periodEnd] (inclusive on both ends).
+  The "date" key stored is always the PERIOD START (= the occurrence's trigger date).
+  
+  - daily  : window = [startDate, startDate]  (same day only, 00:00–23:59)
+  - weekly : window = [startDate, startDate+6] (7 days starting on start date)
+  - monthly: window = [startDate, last day of that month]
+              (regardless of start day — the whole month is available)
+  
+  State rules (applied in order):
+  1. saved 'approved' → approved
+  2. saved 'waiting'  → waiting
+  3. today < periodStart              → pending  (window not open yet)
+  4. periodStart <= today <= periodEnd → open     (window active, can still do)
+  5. today > periodEnd                → missed   (window closed, not done)
+*/
+
+// Return period start (= occurrence key date) as Date object
+function periodStartD(startDate){
+  return new Date(startDate+'T00:00:00');
+}
+
+// Format a Date as local YYYY-MM-DD (avoids UTC offset shifts from toISOString)
+function localDateStr(d){
+  const y=d.getFullYear();
+  const m=String(d.getMonth()+1).padStart(2,'0');
+  const day=String(d.getDate()).padStart(2,'0');
+  return `${y}-${m}-${day}`;
+}
+
+// Return period END as a local YYYY-MM-DD string (never shifts timezone)
+function periodEndStr(startDate, frequency){
+  // Parse date parts directly to avoid timezone issues
+  const [y,mo,da]=startDate.split('-').map(Number);
+  if(frequency==='daily'){
+    // End = same day
+    return startDate;
+  }
+  if(frequency==='weekly'){
+    // End = startDate + 6 days
+    const e=new Date(y,mo-1,da+6);
+    return localDateStr(e);
+  }
+  if(frequency==='monthly'){
+    // End = last day of the same month (day 0 of next month)
+    const e=new Date(y,mo,0); // mo is already 1-based, so new Date(y, mo, 0) = last day of month mo
+    return localDateStr(e);
+  }
+  return startDate;
+}
+
+// Legacy wrapper returning a Date object (used in a few places)
+function periodEndD(startDate, frequency){
+  const str=periodEndStr(startDate, frequency);
+  const [y,m,d]=str.split('-').map(Number);
+  const dt=new Date(y,m-1,d,23,59,59);
+  return dt;
+}
+
+// Generate all occurrence PERIOD STARTS from startDate to P_END
+// Daily = Mon–Fri only, one occurrence per day (00:00–23:59)
+// Weekly = 7-day window starting on start day-of-week
+// Monthly = whole calendar month window
+function isWeekday(dateStr){
+  const d=new Date(dateStr+'T12:00:00');
+  const dow=d.getDay(); // 0=Sun,6=Sat
+  return dow>=1&&dow<=5;
+}
+function nextWeekday(dateStr){
+  // Advance from dateStr to next Mon–Fri date
+  const d=new Date(dateStr+'T12:00:00');
+  do{ d.setDate(d.getDate()+1); } while(d.getDay()===0||d.getDay()===6);
+  return d.toISOString().slice(0,10);
+}
+function firstWeekdayOnOrAfter(dateStr){
+  // If dateStr is already a weekday return it; otherwise advance to Monday
+  const d=new Date(dateStr+'T12:00:00');
+  while(d.getDay()===0||d.getDay()===6){ d.setDate(d.getDate()+1); }
+  return d.toISOString().slice(0,10);
+}
+
+function generateOccurrences(startDate, frequency){
+  const list=[];
+  const seen=new Set(); // guard against duplicates
+  const projectEndStr=P_END;
+  let curStr = frequency==='daily'
+    ? firstWeekdayOnOrAfter(startDate)  // daily starts on first weekday
+    : startDate;
+  if(!curStr) return list;
+  let safety=0;
+  while(curStr<=projectEndStr && safety<600){
+    safety++;
+    // Skip weekends for daily
+    if(frequency==='daily'&&!isWeekday(curStr)){
+      curStr=nextWeekday(curStr);
+      continue;
+    }
+    if(seen.has(curStr)) break; // safety against infinite loop
+    seen.add(curStr);
+    const pEndStr=periodEndStr(curStr, frequency);
+    const pEndFinal=pEndStr<=projectEndStr ? pEndStr : projectEndStr;
+    list.push({ date: curStr, periodEnd: pEndFinal });
+    // Advance to next period start
+    if(frequency==='daily'){
+      // Next weekday after today
+      curStr=nextWeekday(curStr);
+    } else if(frequency==='weekly'){
+      // 7 days later
+      const next=new Date(curStr+'T12:00:00');
+      next.setDate(next.getDate()+7);
+      curStr=next.toISOString().slice(0,10);
+    } else if(frequency==='monthly'){
+      // First day of next month (keep same start day-of-month)
+      const cur=new Date(curStr+'T12:00:00');
+      const next=new Date(cur.getFullYear(), cur.getMonth()+1, cur.getDate());
+      curStr=next.toISOString().slice(0,10);
+    } else break;
+  }
+  return list;
+}
+
+// Parse a YYYY-MM-DD string directly into year/month/day (no timezone shift)
+function parseDateParts(str){
+  const [y,m,d]=str.split('-').map(Number);
+  return {y,m,d};
+}
+// Format a local date as readable Portuguese string
+function fmtDateLocal(str, options){
+  const {y,m,d}=parseDateParts(str);
+  // Use noon UTC to avoid any DST/timezone issues in formatting
+  const dt=new Date(Date.UTC(y,m-1,d,12,0,0));
+  return dt.toLocaleDateString('pt-BR', options);
+}
+
+// Human-readable period label — fully timezone safe
+function occPeriodLabel(occ, frequency){
+  if(frequency==='daily'){
+    // Show full weekday + date, e.g. "terça-feira, 29 de abr. de 26"
+    return fmtDateLocal(occ.date,{weekday:'long',day:'2-digit',month:'short',year:'2-digit'});
+  }
+  if(frequency==='weekly'){
+    const sStr=fmtDateLocal(occ.date,{day:'2-digit',month:'short'});
+    const eStr=fmtDateLocal(occ.periodEnd,{day:'2-digit',month:'short'});
+    return `${sStr} → ${eStr}`;
+  }
+  if(frequency==='monthly'){
+    return fmtDateLocal(occ.date,{month:'long',year:'numeric'});
+  }
+  return occ.date;
+}
+
+// Compute the live state of an occurrence — uses pure date-string comparison (timezone safe)
+function occState(occ, savedStatus, savedProgress){
+  if(savedStatus==='approved') return 'approved';
+  if(savedStatus==='waiting')  return 'waiting';
+  // revision stays visible so leader can see feedback and correct
+  if(savedStatus==='revision') return 'revision';
+
+  const today=getToday();       // 'YYYY-MM-DD' local
+  const start=occ.date;         // 'YYYY-MM-DD'
+  const end=occ.periodEnd;      // 'YYYY-MM-DD' — now always the correct LOCAL date
+
+  // progress: check if window still open by date-string comparison
+  if(savedStatus==='progress'){
+    return today<=end ? 'progress' : 'missed';
+  }
+
+  if(today < start) return 'pending';    // window not started yet
+  if(today <= end){
+    // window is open (today is between start and end inclusive)
+    const prog=parseInt(savedProgress)||0;
+    if(prog>=1&&prog<=99) return 'progress';
+    return 'open';
+  }
+  return 'missed'; // today > end: window has closed
+}
+
+// Get all enriched occurrences for a leader on a specific recurring action
+// IMPORTANT: always coerce actionId to String for consistent localStorage key lookup
+function getOccurrencesForLeader(actionId, leaderName, frequency, startDate){
+  const key=String(actionId);
+  const occs=generateOccurrences(startDate, frequency);
+  const saved=(DB.recurOccs[leaderName]||{})[key]||{};
+  return occs.map((occ,idx)=>{
+    const sv=saved[occ.date]||{};
+    const state=occState(occ, sv.status||'', sv.progress||0);
+    return{
+      date:occ.date, periodEnd:occ.periodEnd, key:occ.date, idx,
+      state,
+      status: sv.status||'',
+      progress: sv.progress||0,
+      note: sv.note||'',
+      evidence: sv.evidence||null,
+      evidenceName: sv.evidenceName||'',
+      evidenceDataUrl: sv.evidenceDataUrl||'',
+      approvalNote: sv.approvalNote||'',
+      approvedAt: sv.approvedAt||'',
+      periodLabel: occPeriodLabel(occ, frequency),
+    };
+  });
+}
+
+// Stats for dashboard: only count occurrences whose window has STARTED (not pending)
+function recurStats(action){
+  const key=String(action.id);
+  let totalDue=0,totalDone=0,totalMissed=0,totalWaiting=0,totalOpen=0;
+  DB.leaderMeta.forEach(lm=>{
+    const assigned=action.leaderAssigned?.length>0?action.leaderAssigned:DB.leaderMeta.map(l=>l.name);
+    if(!assigned.includes(lm.name)) return;
+    const occs=getOccurrencesForLeader(key,lm.name,action.frequency,action.start);
+    occs.filter(o=>o.state!=='pending').forEach(o=>{
+      totalDue++;
+      if(o.state==='approved')               totalDone++;
+      else if(o.state==='waiting')           totalWaiting++;
+      else if(o.state==='missed')            totalMissed++;
+      else if(o.state==='open'||o.state==='progress') totalOpen++;
+    });
+  });
+  const allOccs=DB.leaderMeta.length>0?getOccurrencesForLeader(key,DB.leaderMeta[0].name,action.frequency,action.start):[];
+  return{totalDue,totalDone,totalMissed,totalWaiting,totalOpen,dates:allOccs.map(o=>o.date)};
+}
+
+// ═══════════════════════════════════════════════════════
+// DATA
+// ═══════════════════════════════════════════════════════
+const DEF_LEADERS=['Ana Lima','Bruno Souza','Carla Mendes','Diego Oliveira',
+  'Elena Costa','Fábio Santos','Gisele Rocha','Henrique Alves','Ingrid Ferreira','João Paulo'];
+
+function defActions(){return[
+  {id:1,pillar:'P1',phase:'F2',what:'Diagnóstico: levantamento de gaps',who:'Gestor',start:'2026-06-02',end:'2026-06-13',continuous:false,frequency:'',status:'Não iniciada',priority:'Alta',approver:'Gestor',leaderTask:false,leaderInstruction:'',leaderAssigned:[]},
+  {id:2,pillar:'P1',phase:'F2',what:'Elaborar treinamento Pipefy',who:'Consultor',start:'2026-06-02',end:'2026-06-27',continuous:false,frequency:'',status:'Não iniciada',priority:'Alta',approver:'Gestor',leaderTask:true,leaderInstruction:'Realize o treinamento completo de Pipefy e envie o certificado ou print de conclusão.',leaderAssigned:[]},
+  {id:3,pillar:'P1',phase:'F3',what:'Hard Skill: Google Sheets + IA',who:'Consultor',start:'2026-07-01',end:'2026-08-28',continuous:false,frequency:'',status:'Não iniciada',priority:'Alta',approver:'Consultor',leaderTask:true,leaderInstruction:'Participe do workshop e entregue o dashboard da sua área.',leaderAssigned:[]},
+  {id:4,pillar:'P1',phase:'F2',what:'Soft Skills: Liderança e Delegação',who:'RH',start:'2026-06-15',end:'2026-07-10',continuous:false,frequency:'',status:'Não iniciada',priority:'Alta',approver:'RH',leaderTask:true,leaderInstruction:'Conclua o módulo e entregue seu plano de aplicação prática.',leaderAssigned:[]},
+  {id:5,pillar:'P2',phase:'F2',what:'Workshop KPIs',who:'Consultor',start:'2026-06-02',end:'2026-06-06',continuous:false,frequency:'',status:'Não iniciada',priority:'Alta',approver:'Gestor',leaderTask:false,leaderInstruction:'',leaderAssigned:[]},
+  {id:6,pillar:'P2',phase:'F2',what:'Definir KPIs por área',who:'Gestor',start:'2026-06-16',end:'2026-06-27',continuous:false,frequency:'',status:'Não iniciada',priority:'Alta',approver:'Gestor',leaderTask:false,leaderInstruction:'',leaderAssigned:[]},
+  {id:7,pillar:'P2',phase:'F3',what:'Dashboard de performance',who:'Consultor',start:'2026-07-01',end:'2026-08-01',continuous:false,frequency:'',status:'Não iniciada',priority:'Alta',approver:'Gestor',leaderTask:false,leaderInstruction:'',leaderAssigned:[]},
+  {id:8,pillar:'P2',phase:'F2',what:'Check-in mensal de indicadores',who:'Gestor',start:'2026-06-30',end:'',continuous:true,frequency:'monthly',status:'Em andamento',priority:'Alta',approver:'Gestor',leaderTask:true,leaderInstruction:'Apresente a evolução dos seus indicadores neste mês e registre o status de cada KPI.',leaderAssigned:[]},
+  {id:9,pillar:'P3',phase:'F2',what:'Inventário de processos',who:'Consultor',start:'2026-06-02',end:'2026-06-13',continuous:false,frequency:'',status:'Não iniciada',priority:'Alta',approver:'Gestor',leaderTask:false,leaderInstruction:'',leaderAssigned:[]},
+  {id:10,pillar:'P3',phase:'F3',what:'Mapeamento POPs prioritários',who:'Consultor',start:'2026-07-01',end:'2026-08-28',continuous:false,frequency:'',status:'Não iniciada',priority:'Alta',approver:'Gestor',leaderTask:true,leaderInstruction:'Participe das sessões e valide os POPs da sua área.',leaderAssigned:[]},
+  {id:11,pillar:'P4',phase:'F2',what:'PDI individual por líder',who:'RH',start:'2026-06-02',end:'2026-07-10',continuous:false,frequency:'',status:'Não iniciada',priority:'Alta',approver:'RH',leaderTask:false,leaderInstruction:'',leaderAssigned:[]},
+  {id:12,pillar:'P1',phase:'F2',what:'Reunião semanal de alinhamento',who:'Gestor',start:'2026-06-02',end:'',continuous:true,frequency:'weekly',status:'Em andamento',priority:'Alta',approver:'Gestor',leaderTask:false,leaderInstruction:'',leaderAssigned:[]},
+  {id:13,pillar:'P2',phase:'F2',what:'Relatório diário de acompanhamento',who:'Gestor',start:'2026-06-02',end:'',continuous:true,frequency:'daily',status:'Em andamento',priority:'Média',approver:'Gestor',leaderTask:false,leaderInstruction:'',leaderAssigned:[]},
+]}
+
+function defLeaderTasks(actions){
+  return actions.filter(a=>a.leaderTask&&!a.continuous).map(a=>({
+    id:'lt_'+a.id,sourceActionId:a.id,pillar:a.pillar,
+    title:a.what,instruction:a.leaderInstruction,
+    category:PILLARS[a.pillar]?.label||'',
+    requiresEvidence:true,approver:a.approver,phase:a.phase,
+  }));
+}
+function blankTask(tmpl){
+  return{...tmpl,status:'Não iniciada',progress:0,leaderNote:'',evidence:null,evidenceName:'',evidenceDataUrl:'',approvalNote:'',approvedAt:''};
+}
+
+// ═══════════════════════════════════════════════════════
+// DB
+// ═══════════════════════════════════════════════════════
+let DB={};
+let USERS={
+  gestor:{role:'equipe',display:'Gestor',team:'Gestor',pass:'123'},
+  consultor:{role:'equipe',display:'Consultor',team:'Consultor',pass:'123'},
+  rh:{role:'equipe',display:'RH',team:'RH',pass:'123'},
+};
+
+function loadDB(){
+  try{DB=JSON.parse(localStorage.getItem('im4_db')||'{}')}catch{DB={}}
+  if(!DB.actions) DB.actions=defActions();
+  if(!DB.leaderMeta) DB.leaderMeta=DEF_LEADERS.map((n,i)=>({id:i+1,name:n,username:n.toLowerCase().replace(/\s+/g,'_'),pass:'lider123',area:'',email:'',phone:'',active:true}));
+  if(!DB.leaderTasks){
+    const tmpl=defLeaderTasks(DB.actions);
+    DB.leaderTasks={};
+    DB.leaderMeta.forEach(lm=>{DB.leaderTasks[lm.name]=tmpl.map(t=>blankTask(t));});
+  }
+  // recurOccs: {leaderName: {actionId: {date: {status,note,evidence,...}}}}
+  if(!DB.recurOccs) DB.recurOccs={};
+  if(!DB.nextId) DB.nextId=200;
+  rebuildUsers();
+}
+function rebuildUsers(){
+  USERS={
+    gestor:{role:'equipe',display:'Gestor',team:'Gestor',pass:'123'},
+    consultor:{role:'equipe',display:'Consultor',team:'Consultor',pass:'123'},
+    rh:{role:'equipe',display:'RH',team:'RH',pass:'123'},
+  };
+  (DB.leaderMeta||[]).forEach(l=>{USERS[l.username]={role:'lider',display:l.name,pass:l.pass};});
+}
+function saveDB(){try{localStorage.setItem('im4_db',JSON.stringify(DB));}catch{}}
+loadDB();
+
+function syncLeaderTask(action){
+  if(!action.leaderTask) return;
+  const tmpl={id:'lt_'+action.id,sourceActionId:action.id,pillar:action.pillar,title:action.what,instruction:action.leaderInstruction,category:PILLARS[action.pillar]?.label||'',requiresEvidence:true,approver:action.approver,phase:action.phase};
+  const assigned=action.leaderAssigned?.length>0?action.leaderAssigned:DB.leaderMeta.map(l=>l.name);
+  DB.leaderMeta.forEach(lm=>{
+    if(!DB.leaderTasks[lm.name]) DB.leaderTasks[lm.name]=[];
+    if(assigned.includes(lm.name)){
+      const ex=DB.leaderTasks[lm.name].find(t=>t.id==='lt_'+action.id);
+      if(!ex) DB.leaderTasks[lm.name].push(blankTask(tmpl));
+      else Object.assign(ex,{title:tmpl.title,instruction:tmpl.instruction,pillar:tmpl.pillar,approver:tmpl.approver,phase:tmpl.phase});
+    } else {
+      DB.leaderTasks[lm.name]=DB.leaderTasks[lm.name].filter(t=>t.id!=='lt_'+action.id);
+    }
+  });
+}
+function removeLeaderTask(actionId){
+  DB.leaderMeta.forEach(lm=>{if(DB.leaderTasks[lm.name]) DB.leaderTasks[lm.name]=DB.leaderTasks[lm.name].filter(t=>t.id!=='lt_'+actionId);});
+}
+
+// ═══════════════════════════════════════════════════════
+// SESSION
+// ═══════════════════════════════════════════════════════
+let SES={};
+let loginRole='equipe';
+let curTab='dashboard';
+let fPillar='ALL',fWho='ALL',fPhase='ALL',fType='ALL',ganttF='ALL',adherL=null;
+
+function setLR(r,el){loginRole=r;document.querySelectorAll('.login-role-tab').forEach(b=>b.classList.remove('active'));el.classList.add('active');}
+function doLogin(){
+  const u=document.getElementById('lu').value.trim().toLowerCase();
+  const p=document.getElementById('lp').value;
+  const usr=USERS[u];
+  if(!usr||usr.pass!==p){document.getElementById('lerr').textContent='Usuário ou senha incorretos.';return}
+  if(loginRole==='lider'&&usr.role!=='lider'){document.getElementById('lerr').textContent='Use a aba Equipe Projeto.';return}
+  if(loginRole==='equipe'&&usr.role!=='equipe'){document.getElementById('lerr').textContent='Use a aba Líder.';return}
+  SES={user:u,role:usr.role,display:usr.display,team:usr.team||null};
+  document.getElementById('login-screen').style.display='none';
+  document.getElementById('app').style.display='flex';
+  if(!adherL&&DB.leaderMeta.length) adherL=DB.leaderMeta[0].name;
+  initApp();
+}
+function doLogout(){SES={};document.getElementById('login-screen').style.display='flex';document.getElementById('app').style.display='none';document.getElementById('lu').value='';document.getElementById('lp').value='';document.getElementById('lerr').textContent='';}
+function initApp(){
+  document.getElementById('h-av').textContent=SES.display.charAt(0).toUpperCase();
+  document.getElementById('h-name').textContent=SES.display;
+  document.getElementById('h-pill').textContent=SES.role==='equipe'?'👥 Gestão do Programa':'🎯 Portal do Líder';
+  if(SES.role==='equipe'){buildEqNav();switchTab('dashboard');}
+  else{buildLdrNav();switchTab('minhastasks');}
+}
+function buildEqNav(){
+  document.getElementById('nav-bar').innerHTML=`
+    <span class="nav-sep">Projeto</span>
+    <button class="nav-btn" onclick="switchTab('dashboard')">📊 Dashboard</button>
+    <button class="nav-btn" onclick="switchTab('actions')">📋 Ações do Projeto</button>
+    <button class="nav-btn" onclick="switchTab('leadertasks')">🎯 Tarefas Líderes</button>
+    <button class="nav-btn" onclick="switchTab('recurrence')">♻️ Recorrências</button>
+    <button class="nav-btn" onclick="switchTab('gantt')">📅 Gantt</button>
+    <span class="nav-sep">Líderes</span>
+    <button class="nav-btn" onclick="switchTab('adherence')">📈 Aderência</button>
+    <button class="nav-btn" onclick="switchTab('ldr_mgmt')">👤 Líderes</button>
+    <span class="nav-sep">Equipe</span>
+    <button class="nav-btn" onclick="switchTab('team')">👥 Equipe</button>
+    <button class="nav-btn" onclick="switchTab('approvals')">✅ Aprovações</button>`;
+}
+function buildLdrNav(){
+  document.getElementById('nav-bar').innerHTML=`
+    <button class="nav-btn" onclick="switchTab('minhastasks')">🎯 Minhas Tarefas</button>
+    <button class="nav-btn" onclick="switchTab('recurrences_ldr')">♻️ Recorrentes</button>
+    <button class="nav-btn" onclick="switchTab('meuprogresso')">📈 Meu Progresso</button>
+    <button class="nav-btn" onclick="switchTab('ranking')">🏆 Ranking</button>`;
+}
+function switchTab(tab){
+  curTab=tab;
+  document.querySelectorAll('.nav-btn').forEach(b=>{
+    const m={dashboard:'dashboard',actions:'ações',leadertasks:'tarefas',recurrence:'recorrências',gantt:'gantt',adherence:'aderência',ldr_mgmt:'líderes',team:'equipe',approvals:'aprovações',minhastasks:'minhas',recurrences_ldr:'recorrentes',meuprogresso:'progresso',ranking:'ranking'};
+    b.classList.toggle('active',b.textContent.toLowerCase().includes(m[tab]||tab));
+  });
+  document.getElementById('body').innerHTML=renderTab(tab);
+  updateHStats();
+}
+function renderTab(t){
+  if(SES.role==='equipe'){
+    if(t==='dashboard')return rDashboard();
+    if(t==='actions')return rActions();
+    if(t==='leadertasks')return rLeaderTasksView();
+    if(t==='recurrence')return rRecurrenceBoard();
+    if(t==='gantt')return rGantt();
+    if(t==='adherence')return rAdherence();
+    if(t==='ldr_mgmt')return rLeadersMgmt();
+    if(t==='team')return rTeam();
+    if(t==='approvals')return rApprovals();
+  } else {
+    if(t==='minhastasks')return rMinhasTasks();
+    if(t==='recurrences_ldr')return rRecurrencesLdr();
+    if(t==='meuprogresso')return rMeuProgresso();
+    if(t==='ranking')return rRanking();
+  }
+  return'<div style="padding:40px;text-align:center;color:#64748B">Em breve</div>';
+}
+function updateHStats(){
+  if(SES.role!=='equipe')return;
+  const conc=DB.actions.filter(a=>!a.continuous);
+  const done=conc.filter(a=>a.status==='Concluída').length;
+  const prog=conc.filter(a=>a.status==='Em andamento').length;
+  const late=conc.filter(a=>a.status==='Atrasada').length;
+  const pend=pendAprov();
+  document.getElementById('h-stats').textContent=`⬜${conc.length-done-prog-late} 🟡${prog} 🟢${done} 🔴${late}${pend>0?` 📋${pend}`:''}`;
+}
+
+// ═══════════════════════════════════════════════════════
+// HELPERS
+// ═══════════════════════════════════════════════════════
+function fmtD(d){
+  if(!d)return'—';
+  try{
+    // Use Date.UTC to avoid timezone-induced day shifts
+    const [y,m,dy]=d.split('-').map(Number);
+    return new Date(Date.UTC(y,m-1,dy,12,0,0)).toLocaleDateString('pt-BR',{day:'2-digit',month:'short'});
+  }catch{return d;}
+}
+function pb(v,color,h=8){return`<div class="pb-wrap" style="height:${h}px"><div class="pb-fill" style="width:${Math.min(100,Math.max(0,v||0))}%;background:${color};height:${h}px"></div></div>`}
+function scard(lbl,val,sub,c){return`<div class="stat-card"><div class="slbl">${lbl}</div><div class="sval" style="color:${c||'#0D2B55'}">${val}</div>${sub?`<div class="ssub">${sub}</div>`:''}</div>`}
+function chip(s,map){const c=map[s]||map['Não iniciada'];return`<span class="chip" style="background:${c.bg};color:${c.c}">${c.dot} ${s}</span>`}
+function stChip(s){return chip(s,ST)}
+function lstChip(s){return chip(s,LST)}
+function pillarBadge(pid){const p=PILLARS[pid]||{bg:'#eee',color:'#333'};return`<span class="badge b${(pid||'').toLowerCase()}" style="background:${p.bg};color:${p.color};font-size:11px;font-weight:700;padding:2px 8px;border-radius:20px">${pid}</span>`}
+function av(name,size=26){return`<div class="av" style="width:${size}px;height:${size}px;font-size:${Math.round(size*.42)}px;background:${aColor(name)}">${(name||'?').charAt(0)}</div>`}
+function aColor(n){const c=['#2563EB','#10B981','#F97316','#7C3AED','#0D9488','#EF4444','#F59E0B'];let h=0;for(let x of(n||''))h+=x.charCodeAt(0);return c[h%c.length]}
+function scoreColor(s){return s>=70?'#10B981':s>=40?'#F59E0B':'#EF4444'}
+function ldrScore(name){
+  const tasks=DB.leaderTasks[name]||[];
+  const today=getToday();
+  // conclusive: Concluído=approved, Aguardando aprovação=half-credit
+  const conc_done=tasks.filter(t=>t.status==='Concluído').length;
+  const conc_prog=tasks.filter(t=>t.status==='Em andamento'||t.status==='Aguardando aprovação'||t.status==='Em revisão').length;
+  const conc_total=tasks.length;
+  // recurring score: only count occurrences whose window has started
+  let rec_due=0,rec_done=0,rec_prog=0;
+  DB.actions.filter(a=>a.continuous&&a.leaderTask).forEach(a=>{
+    const assigned=a.leaderAssigned?.length>0?a.leaderAssigned:DB.leaderMeta.map(l=>l.name);
+    if(!assigned.includes(name)) return;
+    const occs=getOccurrencesForLeader(String(a.id),name,a.frequency,a.start).filter(o=>o.state!=='pending');
+    rec_due+=occs.length;
+    rec_done+=occs.filter(o=>o.state==='approved').length;
+    rec_prog+=occs.filter(o=>o.state==='waiting'||o.state==='progress').length;
+  });
+  const total=conc_total+rec_due;
+  if(!total) return 0;
+  return Math.round(((conc_done+conc_prog*.5+rec_done+rec_prog*.5)/total)*100);
+}
+function pendAprov(){
+  let n=0;
+  DB.leaderMeta.forEach(lm=>{
+    // conclusive tasks: check new status 'Concluído' means approved, 'Aguardando aprovação' means pending
+    (DB.leaderTasks[lm.name]||[]).forEach(t=>{if(t.status==='Aguardando aprovação')n++;});
+    // recurring tasks: use String key
+    DB.actions.filter(a=>a.continuous&&a.leaderTask).forEach(a=>{
+      const assigned=a.leaderAssigned?.length>0?a.leaderAssigned:DB.leaderMeta.map(l=>l.name);
+      if(!assigned.includes(lm.name)) return;
+      const occs=getOccurrencesForLeader(String(a.id),lm.name,a.frequency,a.start);
+      n+=occs.filter(o=>o.state==='waiting').length;
+    });
+  });
+  return n;
+}
+function freqLabel(f){return{daily:'Diária',weekly:'Semanal',monthly:'Mensal'}[f]||f;}
+function phaseLabel(id){return PHASES.find(p=>p.id===id)?.label||id;}
+
+// ═══════════════════════════════════════════════════════
+// DONUT SVG
+// ═══════════════════════════════════════════════════════
+function donut(data,size=120){
+  const total=data.reduce((s,d)=>s+d.v,0);
+  if(!total)return`<svg width="${size}" height="${size}"><circle cx="${size/2}" cy="${size/2}" r="${size/2-14}" fill="#E2E8F0"/><text x="${size/2}" y="${size/2+5}" text-anchor="middle" font-size="13" fill="#94A3B8">0%</text></svg>`;
+  let cum=0;const r=size/2-14,cx=size/2,cy=size/2;let s='';
+  data.forEach(d=>{
+    if(!d.v)return;
+    const a1=(cum/total)*2*Math.PI-Math.PI/2,a2=((cum+d.v)/total)*2*Math.PI-Math.PI/2;
+    cum+=d.v;const lg=a2-a1>Math.PI?1:0;
+    const x1=cx+r*Math.cos(a1),y1=cy+r*Math.sin(a1),x2=cx+r*Math.cos(a2),y2=cy+r*Math.sin(a2);
+    s+=`<path d="M${cx},${cy}L${x1.toFixed(1)},${y1.toFixed(1)}A${r},${r},0,${lg},1,${x2.toFixed(1)},${y2.toFixed(1)}Z" fill="${d.c}" opacity=".9"><title>${d.l||''}</title></path>`;
+  });
+  const pct=Math.round((data[0].v/total)*100);
+  return`<svg width="${size}" height="${size}">${s}<circle cx="${cx}" cy="${cy}" r="${r*.6}" fill="white"/><text x="${cx}" y="${cy+5}" text-anchor="middle" font-size="15" font-weight="800" fill="#0D2B55">${pct}%</text></svg>`;
+}
+
+// ═══════════════════════════════════════════════════════
+// DASHBOARD
+// ═══════════════════════════════════════════════════════
+function rDashboard(){
+  const conc=DB.actions.filter(a=>!a.continuous);
+  const cont=DB.actions.filter(a=>a.continuous);
+  const done=conc.filter(a=>a.status==='Concluída').length;
+  const prog=conc.filter(a=>a.status==='Em andamento').length;
+  const late=conc.filter(a=>a.status==='Atrasada').length;
+  const ni=conc.filter(a=>a.status==='Não iniciada').length;
+  const implPct=conc.length?Math.round(((done+prog*.5)/conc.length)*100):0;
+  const pA=pendAprov();
+  const lScores=DB.leaderMeta.map(l=>({name:l.name,score:ldrScore(l.name)})).sort((a,b)=>b.score-a.score);
+  const avgAdh=lScores.length?Math.round(lScores.reduce((s,l)=>s+l.score,0)/lScores.length):0;
+
+  // recurring stats
+  let totalDue=0,totalRecDone=0,totalRecMissed=0,totalRecWaiting=0;
+  cont.forEach(a=>{
+    const s=recurStats(a);
+    totalDue+=s.totalDue;totalRecDone+=s.totalDone;totalRecMissed+=s.totalMissed;totalRecWaiting+=s.totalWaiting;
+  });
+
+  // leader tasks
+  let ltDone=0,ltPend=0,ltReview=0;
+  DB.leaderMeta.forEach(lm=>{(DB.leaderTasks[lm.name]||[]).forEach(t=>{
+    if(t.status==='Aprovado')ltDone++;
+    else if(t.status==='Aguardando aprovação')ltReview++;
+    else ltPend++;
+  });});
+
+  const byPillar=PIDS.map(pid=>{
+    const pa=conc.filter(a=>a.pillar===pid);
+    const pd=pa.filter(a=>a.status==='Concluída').length;
+    const pp=pa.filter(a=>a.status==='Em andamento').length;
+    const pct=pa.length?Math.round(((pd+pp*.5)/pa.length)*100):0;
+    return{...PILLARS[pid],total:pa.length,done:pd,pct};
+  });
+
+  const alertHtml=pA>0?`<div class="card" style="border:1.5px solid #7C3AED;background:#F5F3FF;margin-bottom:16px">
+    <div class="sec-title">📋 ${pA} Evidência(s) Aguardando Aprovação</div>
+    ${DB.leaderMeta.flatMap(lm=>[
+      ...(DB.leaderTasks[lm.name]||[]).filter(t=>t.status==='Aguardando aprovação').map(t=>`
+        <div style="display:flex;align-items:center;gap:10px;padding:8px 12px;background:#EDE9FE;border-radius:8px;margin-bottom:5px">
+          ${pillarBadge(t.pillar)}<span style="font-size:13px;flex:1;font-weight:600">${t.title}</span>
+          <span style="font-size:11px;color:#64748B">Líder: <b>${lm.name}</b></span>
+          <button class="btn btn-sm btn-navy" onclick="openApprovalModal('${lm.name}','${t.id}','regular')">Revisar →</button>
+        </div>`),
+      ...DB.actions.filter(a=>a.continuous&&a.leaderTask).flatMap(a=>{
+        const occs=getOccurrencesForLeader(String(a.id),lm.name,a.frequency,a.start).filter(o=>o.state==='waiting');
+        return occs.map(o=>`
+          <div style="display:flex;align-items:center;gap:10px;padding:8px 12px;background:#EDE9FE;border-radius:8px;margin-bottom:5px">
+            ${pillarBadge(a.pillar)}<span style="font-size:13px;flex:1;font-weight:600">♻️ ${a.what} — <span style="font-weight:400">${o.periodLabel}</span></span>
+            <span style="font-size:11px;color:#64748B">Líder: <b>${lm.name}</b></span>
+            <button class="btn btn-sm btn-navy" onclick="openApprovalModal('${lm.name}','${a.id}','recur','${o.date}')">Revisar →</button>
+          </div>`);
+      })
+    ]).join('')}
+  </div>`:'';
+
+  return`
+    <div class="flex-row" style="margin-bottom:16px;gap:10px">
+      ${scard('Ações Conclusivas',conc.length,'excluindo recorrentes','#0D2B55')}
+      ${scard('Concluídas',done,`${Math.round(done/(conc.length||1)*100)}%`,'#10B981')}
+      ${scard('Em andamento',prog,'','#F59E0B')}
+      ${scard('Atrasadas',late,'atenção','#EF4444')}
+      ${scard('Recorrentes',cont.length,'ações ativas','#0D9488')}
+      ${scard('Implantação',implPct+'%','fases conclusivas','#2563EB')}
+      ${scard('Aderência',avgAdh+'%','média líderes','#7C3AED')}
+      ${scard('Aprovações',pA,'pendentes',pA>0?'#7C3AED':'#10B981')}
+    </div>
+    ${alertHtml}
+    <div class="grid2">
+      <div class="card">
+        <div class="sec-title">📊 Ações Conclusivas — Status</div>
+        <div style="display:flex;align-items:center;gap:20px">
+          ${donut([{v:done,c:'#10B981',l:'Concluída'},{v:prog,c:'#F59E0B',l:'Em andamento'},{v:late,c:'#EF4444',l:'Atrasada'},{v:ni,c:'#E2E8F0',l:'Não iniciada'}],120)}
+          <div style="flex:1">${[['Concluída','#10B981'],['Em andamento','#F59E0B'],['Atrasada','#EF4444'],['Não iniciada','#E2E8F0'],['Em espera','#7C3AED']].map(([k,c])=>`
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:7px">
+              <div style="width:10px;height:10px;border-radius:3px;background:${c};flex-shrink:0"></div>
+              <span style="font-size:12px;flex:1">${k}</span>
+              <b style="font-size:12px;color:${c}">${conc.filter(a=>a.status===k).length}</b>
+            </div>`).join('')}</div>
+        </div>
+        ${totalDue>0?`<div style="margin-top:12px;padding-top:12px;border-top:1px solid #E2E8F0">
+          <div style="font-size:11px;font-weight:700;color:#0D9488;margin-bottom:6px">♻️ RECORRENTES — ${totalDue} ocorrências até hoje</div>
+          <div class="flex-row" style="gap:8px">
+            <span style="font-size:12px;background:#D1FAE5;padding:3px 10px;border-radius:8px;color:#065F46;font-weight:700">✅ ${totalRecDone} feitas</span>
+            <span style="font-size:12px;background:#EDE9FE;padding:3px 10px;border-radius:8px;color:#5B21B6;font-weight:700">📋 ${totalRecWaiting} aguard.</span>
+            <span style="font-size:12px;background:#FEE2E2;padding:3px 10px;border-radius:8px;color:#991B1B;font-weight:700">❌ ${totalRecMissed} perdidas</span>
+          </div>
+        </div>`:''}
+      </div>
+      <div class="card">
+        <div class="sec-title">🏛️ Progresso por Pilar</div>
+        ${byPillar.map(p=>`<div style="margin-bottom:12px">
+          <div style="display:flex;justify-content:space-between;margin-bottom:4px">
+            <span style="font-size:12px;font-weight:700;color:${p.color}">${p.icon} ${p.label}</span>
+            <span style="font-size:11px;color:#64748B">${p.done}/${p.total} · <b style="color:${p.color}">${p.pct}%</b></span>
+          </div>${pb(p.pct,p.color,9)}</div>`).join('')}
+      </div>
+    </div>
+    <div class="grid2" style="margin-top:0">
+      <div class="card">
+        <div class="sec-title">🎯 Tarefas dos Líderes (conclusivas)</div>
+        <div style="display:flex;align-items:center;gap:20px">
+          ${donut([{v:ltDone,c:'#10B981',l:'Aprovado'},{v:ltReview,c:'#7C3AED',l:'Aguardando'},{v:ltPend,c:'#E2E8F0',l:'Pendente'}],100)}
+          <div style="flex:1">${[['Aprovadas',ltDone,'#10B981'],['Aguardando',ltReview,'#7C3AED'],['Pendentes',ltPend,'#E2E8F0']].map(([k,v,c])=>`
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:7px">
+              <div style="width:10px;height:10px;border-radius:3px;background:${c}"></div>
+              <span style="font-size:12px;flex:1">${k}</span><b style="font-size:12px;color:${c}">${v}</b>
+            </div>`).join('')}</div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="sec-title">🏆 Top Aderência</div>
+        ${lScores.slice(0,6).map((l,i)=>`
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:9px">
+            <span style="font-size:11px;font-weight:800;color:${i<3?'#F59E0B':'#94A3B8'};min-width:20px">#${i+1}</span>
+            ${av(l.name)}
+            <span style="font-size:12px;flex:1;font-weight:600">${l.name}</span>
+            <div style="width:90px">${pb(l.score,scoreColor(l.score),8)}</div>
+            <b style="font-size:12px;color:${scoreColor(l.score)};min-width:32px;text-align:right">${l.score}%</b>
+          </div>`).join('')}
+      </div>
+    </div>`;
+}
+
+// ═══════════════════════════════════════════════════════
+// ACTIONS LIST
+// ═══════════════════════════════════════════════════════
+function rActions(){
+  const filtered=DB.actions.filter(a=>
+    (fPillar==='ALL'||a.pillar===fPillar)&&
+    (fWho==='ALL'||a.who===fWho)&&
+    (fPhase==='ALL'||a.phase===fPhase)&&
+    (fType==='ALL'||(fType==='conclusive'&&!a.continuous)||(fType==='continuous'&&a.continuous)||(fType==='leader'&&a.leaderTask))
+  );
+  const rows=filtered.map(a=>{
+    const s=ST[a.status]||ST['Não iniciada'];
+    const prioC=a.priority==='Alta'?'#EF4444':a.priority==='Média'?'#F59E0B':'#10B981';
+    const ph=PHASES.find(p=>p.id===a.phase);
+    return`<tr>
+      <td>${pillarBadge(a.pillar)}</td>
+      <td style="max-width:210px">
+        <div style="font-weight:700;font-size:12px">${a.what}</div>
+        <div style="margin-top:3px;display:flex;gap:4px;flex-wrap:wrap">
+          ${a.continuous?`<span class="badge-cont">♻️ ${freqLabel(a.frequency)}</span>`:''}
+          ${a.leaderTask?'<span class="badge-lead">🎯 tarefas líder</span>':''}
+          ${ph?`<span class="phase-badge">${ph.id}</span>`:''}
+        </div>
+      </td>
+      <td><span style="font-size:11px;font-weight:700;background:#EFF6FF;color:#2563EB;padding:2px 8px;border-radius:12px">${a.who}</span></td>
+      <td style="white-space:nowrap;color:#64748B;font-size:11px">${fmtD(a.start)}</td>
+      <td style="white-space:nowrap;color:#64748B;font-size:11px">${a.continuous?`<span class="badge-cont">Contínua até Dez/26</span>`:fmtD(a.end)}</td>
+      <td>${a.continuous
+        ?`<span style="font-size:11px;font-weight:700;background:#CCFBF1;color:#0D9488;padding:3px 8px;border-radius:10px">♻️ Recorrente</span>`
+        :`<select onchange="updActSt(${a.id},this.value)" style="background:${s.bg};color:${s.c};font-weight:700;font-size:11px;padding:3px 6px;border:1px solid ${s.c};border-radius:6px;font-family:inherit;cursor:pointer">${Object.keys(ST).map(k=>`<option value="${k}"${a.status===k?' selected':''}>${ST[k].dot} ${k}</option>`).join('')}</select>`}
+      </td>
+      <td><span style="font-size:11px;font-weight:700;color:${prioC}">${a.priority}</span></td>
+      <td><div style="display:flex;gap:4px"><button class="btn btn-blue btn-sm" onclick="openEditAction(${a.id})">✏️</button><button class="btn btn-red btn-sm" onclick="delAction(${a.id})">🗑</button></div></td>
+    </tr>`;
+  }).join('');
+  return`
+    <div class="card" style="padding:12px 16px;margin-bottom:12px">
+      <div class="flex-row">
+        <b style="color:#0D2B55">Filtros:</b>
+        <select class="inp" style="width:auto" onchange="fPillar=this.value;switchTab('actions')">${['ALL',...PIDS].map(v=>`<option value="${v}"${fPillar===v?' selected':''}>${v==='ALL'?'Todos os Pilares':PILLARS[v].icon+' '+v}</option>`).join('')}</select>
+        <select class="inp" style="width:auto" onchange="fWho=this.value;switchTab('actions')"><option value="ALL">Todos</option>${TEAM.map(t=>`<option${fWho===t?' selected':''}>${t}</option>`).join('')}</select>
+        <select class="inp" style="width:auto" onchange="fPhase=this.value;switchTab('actions')"><option value="ALL">Todas as Fases</option>${PHASES.map(ph=>`<option value="${ph.id}"${fPhase===ph.id?' selected':''}>${ph.label}</option>`).join('')}</select>
+        <select class="inp" style="width:auto" onchange="fType=this.value;switchTab('actions')">
+          <option value="ALL">Todos os tipos</option>
+          <option value="conclusive"${fType==='conclusive'?' selected':''}>Conclusivas</option>
+          <option value="continuous"${fType==='continuous'?' selected':''}>Recorrentes</option>
+          <option value="leader"${fType==='leader'?' selected':''}>Com tarefa líder</option>
+        </select>
+        <span style="font-size:12px;color:#64748B">${filtered.length} ações</span>
+        <button class="btn btn-gold" style="margin-left:auto;padding:8px 16px" onclick="openNewAction()">+ Nova Ação (3Qs)</button>
+      </div>
+    </div>
+    <div class="card"><div class="tbl-wrap">
+      <table class="data"><thead><tr><th>Pilar</th><th>O QUÊ</th><th>QUEM</th><th>Início</th><th>Prazo</th><th>Status</th><th>Prioridade</th><th></th></tr></thead>
+      <tbody>${rows||'<tr><td colspan="8" style="text-align:center;padding:40px;color:#64748B">Sem ações.</td></tr>'}</tbody></table>
+    </div></div>`;
+}
+function updActSt(id,st){DB.actions=DB.actions.map(a=>a.id===id?{...a,status:st}:a);saveDB();switchTab('actions');}
+function delAction(id){if(!confirm('Remover ação e tarefas vinculadas?'))return;removeLeaderTask(id);DB.actions=DB.actions.filter(a=>a.id!==id);saveDB();switchTab('actions');}
+
+// ═══════════════════════════════════════════════════════
+// RECURRENCE BOARD (equipe)
+// ═══════════════════════════════════════════════════════
+function rRecurrenceBoard(){
+  const contActions=DB.actions.filter(a=>a.continuous);
+  if(!contActions.length) return`<div class="card" style="text-align:center;padding:40px;color:#64748B">Nenhuma ação recorrente cadastrada.</div>`;
+
+  const html=contActions.map(a=>{
+    const stats=recurStats(a);
+    const today=getToday();
+    const occs=DB.leaderMeta.length>0?getOccurrencesForLeader(String(a.id),DB.leaderMeta[0].name,a.frequency,a.start):[];
+    const past=occs.filter(o=>o.state!=='pending');
+    const next=occs.filter(o=>o.state==='pending').slice(0,3);
+    const pct=past.length*(DB.leaderMeta.length||1)>0?Math.round((stats.totalDone/Math.max(past.length*(DB.leaderMeta.length||1),1))*100):0;
+
+    // Per leader summary for this action
+    const leaderRows=DB.leaderMeta.map(lm=>{
+      if(a.leaderAssigned?.length>0&&!a.leaderAssigned.includes(lm.name)) return'';
+      const occs=getOccurrencesForLeader(String(a.id),lm.name,a.frequency,a.start);
+      const dueOccs=occs.filter(o=>o.state!=='pending');
+      const lDone=dueOccs.filter(o=>o.state==='approved').length;
+      const lMissed=dueOccs.filter(o=>o.state==='missed').length;
+      const lWaiting=dueOccs.filter(o=>o.state==='waiting').length;
+      const lProg=dueOccs.filter(o=>o.state==='progress').length;
+      const lRev=dueOccs.filter(o=>o.state==='revision').length;
+      const lPct=dueOccs.length?Math.round(lDone/dueOccs.length*100):0;
+      return`<div style="display:flex;align-items:center;gap:8px;padding:5px 8px;border-radius:7px;background:#F8FAFC;margin-bottom:4px">
+        ${av(lm.name,22)}<span style="font-size:11px;flex:1;font-weight:600">${lm.name}</span>
+        <span style="font-size:10px;color:#10B981;font-weight:700">✅${lDone}</span>
+        ${lProg>0?`<span style="font-size:10px;color:#F59E0B;font-weight:700">🟡${lProg}</span>`:''}
+        ${lRev>0?`<span style="font-size:10px;color:#F97316;font-weight:700">↩${lRev}</span>`:''}
+        ${lWaiting>0?`<span style="font-size:10px;color:#7C3AED;font-weight:700">📋${lWaiting}</span>`:''}
+        ${lMissed>0?`<span class="missed-count">❌${lMissed}</span>`:''}
+        <div style="width:60px">${pb(lPct,scoreColor(lPct),6)}</div>
+        <span style="font-size:10px;font-weight:700;color:${scoreColor(lPct)}">${lPct}%</span>
+      </div>`;
+    }).join('');
+
+    return`<div class="card">
+      <div style="display:flex;align-items:flex-start;gap:12px;margin-bottom:14px">
+        <div style="flex:1">
+          <div style="display:flex;gap:6px;margin-bottom:5px">${pillarBadge(a.pillar)}<span class="badge-cont">♻️ ${freqLabel(a.frequency)}</span>${PHASES.find(p=>p.id===a.phase)?`<span class="phase-badge">${a.phase}</span>`:''}</div>
+          <div style="font-size:15px;font-weight:800;color:#0D2B55">${a.what}</div>
+          <div style="font-size:11px;color:#64748B;margin-top:2px">Responsável: <b>${a.who}</b> · Início: ${fmtD(a.start)} · Até Dez/2026</div>
+        </div>
+        <div style="text-align:right;min-width:80px">
+          <div style="font-size:22px;font-weight:800;color:${scoreColor(pct)}">${pct}%</div>
+          <div style="font-size:10px;color:#64748B">cumprimento</div>
+        </div>
+      </div>
+      <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap">
+        <span style="font-size:12px;background:#D1FAE5;padding:3px 10px;border-radius:8px;color:#065F46;font-weight:700">✅ ${stats.totalDone} feitas</span>
+        <span style="font-size:12px;background:#EDE9FE;padding:3px 10px;border-radius:8px;color:#5B21B6;font-weight:700">📋 ${stats.totalWaiting} aguard.</span>
+        <span style="font-size:12px;background:#FEE2E2;padding:3px 10px;border-radius:8px;color:#991B1B;font-weight:700">❌ ${stats.totalMissed} perdidas</span>
+        <span style="font-size:12px;background:#F8FAFC;padding:3px 10px;border-radius:8px;color:#475569;font-weight:700">📅 ${past.length} ocorrências até hoje</span>
+      </div>
+      ${next.length?`<div style="font-size:11px;color:#64748B;margin-bottom:8px">Próximos períodos: ${next.map(o=>`<span style="background:#F1F5F9;padding:2px 7px;border-radius:6px;margin-right:4px">${o.periodLabel}</span>`).join('')}</div>`:''}
+      ${a.leaderTask?`<details style="margin-top:8px"><summary style="font-size:12px;font-weight:700;color:#0D2B55;cursor:pointer;padding:6px 0">👥 Por líder (${DB.leaderMeta.length})</summary><div style="margin-top:8px">${leaderRows}</div></details>`:''}
+    </div>`;
+  }).join('');
+  return`<div class="card" style="padding:12px 16px;margin-bottom:12px"><b>Painel de Recorrências — ${contActions.length} ações ativas</b></div>${html}`;
+}
+
+// ═══════════════════════════════════════════════════════
+// LEADER TASKS VIEW
+// ═══════════════════════════════════════════════════════
+function rLeaderTasksView(){
+  const tmplMap={};
+  DB.leaderMeta.forEach(lm=>{(DB.leaderTasks[lm.name]||[]).forEach(t=>{
+    if(!tmplMap[t.id])tmplMap[t.id]={...t,counts:{done:0,review:0,pend:0,total:0}};
+    const m=tmplMap[t.id];m.counts.total++;
+    if(t.status==='Aprovado')m.counts.done++;
+    else if(t.status==='Aguardando aprovação')m.counts.review++;
+    else m.counts.pend++;
+  });});
+  const tmpls=Object.values(tmplMap);
+  if(!tmpls.length) return`<div class="card" style="text-align:center;padding:40px;color:#64748B">Nenhuma tarefa derivada ainda.</div>`;
+  const rows=tmpls.map(t=>{
+    const pct=t.counts.total?Math.round(t.counts.done/t.counts.total*100):0;
+    const src=DB.actions.find(a=>a.id===t.sourceActionId);
+    return`<tr>
+      <td>${pillarBadge(t.pillar)}</td>
+      <td style="font-weight:700;font-size:12px;max-width:200px">${t.title}</td>
+      <td style="font-size:11px;color:#64748B">${t.category}</td>
+      <td><span style="font-size:11px;font-weight:700;background:#EFF6FF;color:#2563EB;padding:2px 8px;border-radius:12px">${t.approver}</span></td>
+      <td>${src?`<span class="phase-badge">${src.phase||'—'}</span>`:''}</td>
+      <td><div style="display:flex;align-items:center;gap:6px"><div style="width:80px">${pb(pct,'#10B981',7)}</div><span style="font-size:11px;font-weight:700;color:#10B981">${t.counts.done}/${t.counts.total}</span>${t.counts.review>0?`<span style="font-size:10px;color:#7C3AED;font-weight:700">(${t.counts.review}✋)`:''}</div></td>
+      <td><button class="btn btn-blue btn-sm" onclick="openLeaderTaskModal('${t.id}')">Ver →</button></td>
+    </tr>`;
+  }).join('');
+  return`<div class="card" style="padding:12px 16px;margin-bottom:12px"><b>${tmpls.length} tarefas ativas</b></div>
+    <div class="card"><div class="tbl-wrap"><table class="data"><thead><tr><th>Pilar</th><th>Tarefa</th><th>Categoria</th><th>Aprovador</th><th>Fase</th><th>Progresso</th><th></th></tr></thead><tbody>${rows}</tbody></table></div></div>`;
+}
+
+// ═══════════════════════════════════════════════════════
+// GANTT
+// ═══════════════════════════════════════════════════════
+function rGantt(){
+  const acts=ganttF==='ALL'?DB.actions:DB.actions.filter(a=>a.pillar===ganttF);
+  if(!acts.length) return`<div class="card" style="text-align:center;padding:40px;color:#64748B">Sem ações.</div>`;
+  const endD=new Date(P_END);
+  const startD=new Date(P_START);
+  startD.setDate(startD.getDate()-3);
+  const total=Math.round((endD-startD)/86400000);
+  const W=860,RH=30;
+  const todayX=Math.round((new Date(getToday())-startD)/86400000/total*W);
+  let months='';
+  const mc=new Date(startD);mc.setDate(1);
+  while(mc<=endD){
+    const x=Math.round((mc-startD)/86400000/total*W);
+    months+=`<line x1="${x}" y1="20" x2="${x}" y2="${28+acts.length*RH}" stroke="#E2E8F0" stroke-width="1"/><text x="${x+3}" y="14" font-size="9" fill="#64748B" font-weight="600">${mc.toLocaleDateString('pt-BR',{month:'short',year:'2-digit'}).toUpperCase()}</text>`;
+    mc.setMonth(mc.getMonth()+1);
+  }
+  let bars='',labels='';
+  acts.forEach((a,i)=>{
+    const p=PILLARS[a.pillar]||{color:'#64748B'};
+    const s=ST[a.status]||ST['Não iniciada'];
+    const x1=Math.max(0,Math.round((new Date(a.start)-startD)/86400000/total*W));
+    const ed=a.continuous?endD:new Date(a.end||P_END);
+    const x2=Math.round((ed-startD)/86400000/total*W);
+    const bw=Math.max(x2-x1,8);
+    const pp=a.status==='Concluída'?1:a.status==='Em andamento'?.5:.03;
+    const ry=28+i*RH;
+    bars+=`<rect x="0" y="${ry}" width="${W}" height="${RH}" fill="${i%2===0?'#FAFBFC':'#fff'}"/>
+           <rect x="${x1}" y="${ry+5}" width="${bw}" height="${RH-10}" rx="3" fill="${p.color}" opacity="${a.continuous?.55:.85}"/>
+           <rect x="${x1}" y="${ry+5}" width="${Math.max(bw*pp,3)}" height="${RH-10}" rx="3" fill="${s.c}" opacity=".4"/>
+           ${bw>40?`<text x="${x1+4}" y="${ry+RH/2+4}" font-size="9" fill="white" font-weight="600">${a.who}</text>`:''}`;
+    labels+=`<div style="height:${RH}px;display:flex;align-items:center;border-bottom:1px solid #F1F5F9;padding-right:6px;gap:4px">
+      <span style="font-size:9px;font-weight:800;color:${p.color};flex-shrink:0">${a.pillar}</span>
+      <span class="gl">${a.what}</span>
+      ${a.continuous?'<span style="font-size:8px;color:#0D9488;flex-shrink:0">♻</span>':''}
+    </div>`;
+  });
+  return`
+    <div class="card" style="padding:12px 16px;margin-bottom:12px">
+      <div class="flex-row">
+        <b>Gantt — Mai/2026 → Dez/2026</b>
+        <select class="inp" style="width:auto" onchange="ganttF=this.value;switchTab('gantt')">${['ALL',...PIDS].map(v=>`<option value="${v}"${ganttF===v?' selected':''}>${v==='ALL'?'Todos':PILLARS[v]?.icon+' '+v}</option>`).join('')}</select>
+        <span style="font-size:10px;color:#64748B">♻ Contínua &nbsp; <span style="color:#EF4444">| HOJE</span></span>
+      </div>
+    </div>
+    <div class="card" style="padding:14px"><div style="overflow-x:auto">
+      <div style="display:flex;min-width:${240+W}px">
+        <div style="width:240px;flex-shrink:0"><div style="height:28px"></div>${labels}</div>
+        <div style="flex:1;min-width:${W}px"><svg width="${W}" height="${28+acts.length*RH}" style="display:block">${months}${bars}<line x1="${todayX}" y1="0" x2="${todayX}" y2="${28+acts.length*RH}" stroke="#EF4444" stroke-width="1.5" stroke-dasharray="4,3"/><text x="${todayX+3}" y="12" font-size="9" fill="#EF4444" font-weight="700">HOJE</text></svg></div>
+      </div>
+    </div></div>`;
+}
+
+// ═══════════════════════════════════════════════════════
+// ADHERENCE
+// ═══════════════════════════════════════════════════════
+function rAdherence(){
+  const scores=DB.leaderMeta.map(l=>({name:l.name,score:ldrScore(l.name)})).sort((a,b)=>b.score-a.score);
+  if(!adherL&&scores.length) adherL=scores[0].name;
+  const tasks=DB.leaderTasks[adherL]||[];
+  const tasksByPillar=PIDS.map(pid=>({pid,tasks:tasks.filter(t=>t.pillar===pid)}));
+  const sampleTasks=DB.leaderTasks[DB.leaderMeta[0]?.name]||[];
+  const itemAdh=sampleTasks.map(t=>({
+    title:t.title,pillar:t.pillar,
+    pct:Math.round((DB.leaderMeta.filter(lm=>(DB.leaderTasks[lm.name]||[]).find(x=>x.id===t.id&&x.status==='Aprovado')).length/DB.leaderMeta.length)*100)
+  }));
+  return`
+    <div style="display:grid;grid-template-columns:260px 1fr;gap:16px">
+      <div>
+        <div class="card">
+          <div class="sec-title">🏆 Ranking</div>
+          ${scores.map((l,i)=>`<div style="display:flex;align-items:center;gap:8px;padding:7px 8px;border-radius:8px;cursor:pointer;border:1.5px solid ${adherL===l.name?'#2563EB':'transparent'};background:${adherL===l.name?'#EFF6FF':'transparent'}" onclick="adherL='${l.name.replace(/'/g,"\\'")}';switchTab('adherence')">
+            <span style="font-size:11px;font-weight:800;color:${i<3?'#F59E0B':'#94A3B8'};min-width:20px">#${i+1}</span>
+            ${av(l.name)}<div style="flex:1"><div style="font-size:12px;font-weight:700">${l.name}</div>${pb(l.score,scoreColor(l.score),5)}</div>
+            <b style="font-size:12px;color:${scoreColor(l.score)}">${l.score}%</b>
+          </div>`).join('')}
+        </div>
+        <div class="card">
+          <div class="sec-title">📊 Aderência por Tarefa — Time</div>
+          ${itemAdh.map(it=>`<div style="margin-bottom:9px"><div style="display:flex;justify-content:space-between;margin-bottom:3px"><span style="font-size:11px">${pillarBadge(it.pillar)} ${it.title}</span><b style="font-size:11px;color:${scoreColor(it.pct)}">${it.pct}%</b></div>${pb(it.pct,scoreColor(it.pct),8)}</div>`).join('')}
+        </div>
+      </div>
+      <div>
+        <div class="card">
+          <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px">
+            ${av(adherL||'',44)}<div><div style="font-size:18px;font-weight:800">${adherL||'—'}</div><div style="font-size:12px;color:#64748B">Aderência: <b style="color:${scoreColor(ldrScore(adherL))}">${ldrScore(adherL)}%</b></div></div>
+          </div>
+          ${tasksByPillar.map(pp=>{
+            if(!pp.tasks.length)return'';
+            const p=PILLARS[pp.pid];
+            return`<div style="margin-bottom:14px"><div class="sdiv" style="color:${p.color}">${p.icon} ${p.label}</div>
+              ${pp.tasks.map(t=>`<div style="display:flex;align-items:center;gap:10px;padding:8px 10px;background:${(LST[t.status]||LST['Não iniciada']).bg};border-radius:8px;margin-bottom:5px">
+                <span style="font-size:13px;flex:1;font-weight:600">${t.title}</span>
+                <div style="width:70px">${pb(t.progress||0,(LST[t.status]||LST['Não iniciada']).c,7)}</div>
+                <span style="font-size:10px;font-weight:700;color:#64748B">${t.progress||0}%</span>
+                ${lstChip(t.status)}
+                ${t.status==='Aguardando aprovação'?`<button class="btn btn-navy btn-sm" onclick="openApprovalModal('${adherL}','${t.id}','regular')">Aprovar</button>`:''}
+              </div>`).join('')}
+            </div>`;
+          }).join('')}
+        </div>
+      </div>
+    </div>`;
+}
+
+// ═══════════════════════════════════════════════════════
+// LEADERS MANAGEMENT
+// ═══════════════════════════════════════════════════════
+function rLeadersMgmt(){
+  return`
+    <div class="card" style="padding:12px 16px;margin-bottom:12px">
+      <div class="flex-row"><b>${DB.leaderMeta.length} líderes cadastrados</b>
+        <button class="btn btn-gold" style="margin-left:auto" onclick="openNewLeader()">+ Novo Líder</button>
+      </div>
+    </div>
+    <div class="grid3">${DB.leaderMeta.map(l=>{
+      const sc=ldrScore(l.name);
+      const tasks=DB.leaderTasks[l.name]||[];
+      const done=tasks.filter(t=>t.status==='Aprovado').length;
+      return`<div class="card" style="border-top:3px solid ${aColor(l.name)}">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
+          ${av(l.name,40)}<div style="flex:1"><div style="font-size:14px;font-weight:800">${l.name}</div><div style="font-size:11px;color:#64748B">${l.area||'Área não definida'}</div><div style="font-size:10px;color:#94A3B8">@${l.username}</div></div>
+        </div>
+        <div style="margin-bottom:10px"><div style="display:flex;justify-content:space-between;font-size:11px;color:#64748B;margin-bottom:3px"><span>Aderência</span><b style="color:${scoreColor(sc)}">${sc}%</b></div>${pb(sc,scoreColor(sc),10)}</div>
+        <div style="display:flex;gap:8px;font-size:11px;margin-bottom:10px">
+          <span style="flex:1;text-align:center;background:#D1FAE5;padding:5px;border-radius:6px;color:#065F46;font-weight:700">${done} feitas</span>
+          <span style="flex:1;text-align:center;background:#FEF3C7;padding:5px;border-radius:6px;color:#92400E;font-weight:700">${tasks.length-done} pend.</span>
+        </div>
+        <div style="display:flex;gap:6px">
+          <button class="btn btn-blue btn-sm" style="flex:1" onclick="editLeader(${l.id})">✏️ Editar</button>
+          <button class="btn btn-sm" style="flex:1;background:#EFF6FF;color:#2563EB" onclick="adherL='${l.name}';switchTab('adherence')">📈</button>
+          <button class="btn btn-red btn-sm" onclick="delLeader(${l.id})" title="Excluir">🗑</button>
+        </div>
+      </div>`;
+    }).join('')}</div>`;
+}
+function delLeader(id){
+  const l=DB.leaderMeta.find(x=>x.id===id);if(!l)return;
+  if(!confirm(`Excluir "${l.name}"?`))return;
+  DB.leaderMeta=DB.leaderMeta.filter(x=>x.id!==id);
+  delete DB.leaderTasks[l.name];delete DB.recurOccs[l.name];delete USERS[l.username];
+  if(adherL===l.name) adherL=DB.leaderMeta[0]?.name||null;
+  saveDB();switchTab('ldr_mgmt');
+}
+
+// ═══════════════════════════════════════════════════════
+// TEAM
+// ═══════════════════════════════════════════════════════
+function rTeam(){
+  const tC={Gestor:'#0D2B55',Consultor:'#0D9488',RH:'#10B981'};
+  return`<div class="grid3">${TEAM.map(who=>{
+    const my=DB.actions.filter(a=>a.who===who&&!a.continuous);
+    const myC=DB.actions.filter(a=>a.who===who&&a.continuous);
+    const done=my.filter(a=>a.status==='Concluída').length;
+    const prog=my.filter(a=>a.status==='Em andamento').length;
+    const late=my.filter(a=>a.status==='Atrasada').length;
+    const pct=my.length?Math.round(((done+prog*.5)/my.length)*100):0;
+    const color=tC[who];
+    return`<div class="card" style="border-top:3px solid ${color}">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">
+        <div style="width:40px;height:40px;border-radius:20px;background:${color};display:flex;align-items:center;justify-content:center;font-size:16px;color:#fff;font-weight:800;flex-shrink:0">${who.charAt(0)}</div>
+        <div><div style="font-size:16px;font-weight:800;color:${color}">${who}</div><div style="font-size:11px;color:#64748B">${my.length} conclusivas · ${myC.length} recorrentes</div></div>
+        <div style="margin-left:auto">${donut([{v:done,c:'#10B981'},{v:prog,c:'#F59E0B'},{v:late,c:'#EF4444'},{v:my.length-done-prog-late,c:'#E2E8F0'}],80)}</div>
+      </div>
+      <div style="display:flex;gap:8px;margin-bottom:12px">
+        <div style="flex:1;background:#D1FAE5;border-radius:8px;padding:8px;text-align:center"><b style="font-size:18px;color:#10B981;display:block">${done}</b><span style="font-size:10px;color:#64748B">Feitas</span></div>
+        <div style="flex:1;background:#FEF3C7;border-radius:8px;padding:8px;text-align:center"><b style="font-size:18px;color:#F59E0B;display:block">${prog}</b><span style="font-size:10px;color:#64748B">Andamento</span></div>
+        <div style="flex:1;background:#FEE2E2;border-radius:8px;padding:8px;text-align:center"><b style="font-size:18px;color:#EF4444;display:block">${late}</b><span style="font-size:10px;color:#64748B">Atrasadas</span></div>
+      </div>
+      <div style="font-size:11px;color:#64748B;display:flex;justify-content:space-between;margin-bottom:4px"><span>Taxa execução</span><b style="color:${color}">${pct}%</b></div>
+      ${pb(pct,color,10)}
+    </div>`;
+  }).join('')}</div>`;
+}
+
+// ═══════════════════════════════════════════════════════
+// APPROVALS
+// ═══════════════════════════════════════════════════════
+function rApprovals(){
+  let items=[];
+  DB.leaderMeta.forEach(lm=>{
+    (DB.leaderTasks[lm.name]||[]).forEach(t=>{if(t.status==='Aguardando aprovação') items.push({leader:lm.name,task:t,type:'regular',occDate:null});});
+    DB.actions.filter(a=>a.continuous&&a.leaderTask).forEach(a=>{
+      const assigned=a.leaderAssigned?.length>0?a.leaderAssigned:DB.leaderMeta.map(l=>l.name);
+      if(!assigned.includes(lm.name)) return;
+      getOccurrencesForLeader(String(a.id),lm.name,a.frequency,a.start).filter(o=>o.state==='waiting').forEach(o=>{
+        items.push({leader:lm.name,task:{...a,id:String(a.id),title:a.what,instruction:a.leaderInstruction||''},type:'recur',occDate:o.date,occ:o,action:a});
+      });
+    });
+  });
+  if(!items.length) return`<div class="card" style="text-align:center;padding:40px;color:#64748B">✅ Nenhuma aprovação pendente!</div>`;
+  return`
+    <div class="card" style="padding:12px 16px;margin-bottom:12px"><b>${items.length} evidência(s) aguardando revisão</b></div>
+    ${items.map(({leader,task,type,occDate,occ,action})=>`
+      <div class="card" style="border-left:4px solid #7C3AED">
+        <div style="display:flex;align-items:flex-start;gap:16px">
+          <div style="flex:1">
+            <div style="display:flex;gap:8px;align-items:center;margin-bottom:8px">
+              ${pillarBadge(task.pillar||action?.pillar)}
+              ${type==='recur'?`<span class="badge-cont">♻️ ${freqLabel(action?.frequency)}</span>`:''}
+              <span style="font-size:11px;color:#64748B">Aprovador: <b>${task.approver}</b></span>
+            </div>
+            <div style="font-size:15px;font-weight:800;margin-bottom:4px">${task.title||task.what}</div>
+            ${type==='recur'?`<div style="font-size:12px;color:#7C3AED;font-weight:700;margin-bottom:4px">📅 Período: ${occ?.periodLabel||fmtD(occDate)}</div>`:''}
+            <div style="font-size:12px;color:#64748B;margin-bottom:10px">Líder: <b>${leader}</b> · Progresso: <b>${type==='regular'?task.progress||0:100}%</b></div>
+            ${(type==='regular'?task.leaderNote:occ?.note)?`<div style="background:#F8FAFC;border-left:3px solid #94A3B8;padding:8px 12px;border-radius:0 8px 8px 0;margin-bottom:8px">
+              <b style="font-size:11px;color:#64748B">💬 Anotação do líder:</b><br><span style="font-size:12px">${type==='regular'?task.leaderNote:occ.note}</span>
+            </div>`:''}
+            ${(type==='regular'?task.evidence:occ?.evidence)
+              ?`<div class="file-prev"><span style="font-size:20px">📎</span><div style="flex:1"><div style="font-weight:700;font-size:13px">${type==='regular'?task.evidenceName:occ.evidenceName}</div><div style="font-size:11px;color:#64748B">Comprovante de conclusão</div></div>
+                <button class="btn btn-blue btn-sm" onclick="downloadEvidence('${leader}','${type==='regular'?task.id:action.id}','${type}','${occDate||''}')">⬇️ Baixar</button>
+              </div>`
+              :`<div style="background:#FEE2E2;padding:8px 12px;border-radius:8px;font-size:12px;color:#EF4444">⚠️ Nenhum arquivo enviado</div>`}
+          </div>
+          <div style="display:flex;flex-direction:column;gap:8px;min-width:120px">
+            <button class="btn btn-green" onclick="approveTask('${leader}','${type==='regular'?task.id:action.id}','${type}','${occDate||''}',true,'')">✅ Aprovar</button>
+            <button class="btn btn-navy btn-sm" onclick="openApprovalModal('${leader}','${type==='regular'?task.id:action.id}','${type}','${occDate||''}')">💬 Feedback</button>
+            <button class="btn btn-red btn-sm" onclick="approveTask('${leader}','${type==='regular'?task.id:action.id}','${type}','${occDate||''}',false,'Por favor revise e reenvie.')">↩ Pedir revisão</button>
+          </div>
+        </div>
+      </div>`).join('')}`;
+}
+
+// Download evidence helper
+function downloadEvidence(leader,taskId,type,occDate){
+  let dataUrl='',name='evidencia';
+  if(type==='regular'){
+    const t=(DB.leaderTasks[leader]||[]).find(x=>x.id===taskId);
+    if(t){dataUrl=t.evidenceDataUrl;name=t.evidenceName;}
+  } else {
+    // Always use String key for recurOccs
+    const key=String(taskId);
+    const saved=((DB.recurOccs[leader]||{})[key]||{})[occDate]||{};
+    dataUrl=saved.evidenceDataUrl;name=saved.evidenceName||'evidencia';
+  }
+  if(!dataUrl){alert('Arquivo não disponível para download.');return;}
+  const a=document.createElement('a');a.href=dataUrl;a.download=name;document.body.appendChild(a);a.click();document.body.removeChild(a);
+}
+
+function approveTask(leader,taskId,type,occDate,approve,autoNote){
+  if(type==='regular'){
+    // For regular tasks: approved→'Concluído', rejected→'Em revisão'
+    DB.leaderTasks[leader]=(DB.leaderTasks[leader]||[]).map(t=>{
+      if(t.id!==taskId)return t;
+      return{...t,
+        status:approve?'Concluído':'Em revisão',
+        progress:approve?100:t.progress,
+        approvalNote:autoNote||t.approvalNote,
+        approvedAt:approve?new Date().toLocaleDateString('pt-BR'):''
+      };
+    });
+  } else {
+    // For recurrences: always coerce key to String
+    const key=String(taskId);
+    if(!DB.recurOccs[leader]) DB.recurOccs[leader]={};
+    if(!DB.recurOccs[leader][key]) DB.recurOccs[leader][key]={};
+    const prev=DB.recurOccs[leader][key][occDate]||{};
+    DB.recurOccs[leader][key][occDate]={
+      ...prev,
+      status:approve?'approved':'revision',
+      approvalNote:autoNote||prev.approvalNote||'',
+      approvedAt:approve?new Date().toLocaleDateString('pt-BR'):''
+    };
+  }
+  saveDB();switchTab(curTab);
+}
+function openApprovalModal(leader,taskId,type,occDate){
+  let task,occ;
+  if(type==='regular'){task=(DB.leaderTasks[leader]||[]).find(t=>t.id===taskId);}
+  else{
+    const a=DB.actions.find(x=>x.id===parseInt(taskId)||x.id===taskId);
+    if(a){
+      const occs=getOccurrencesForLeader(String(a.id),leader,a.frequency,a.start);
+      occ=occs.find(o=>o.date===occDate);
+      task={id:taskId,title:a.what,pillar:a.pillar,approver:a.approver,leaderNote:occ?.note||'',evidence:occ?.evidence||null,evidenceName:occ?.evidenceName||'',evidenceDataUrl:occ?.evidenceDataUrl||'',approvalNote:occ?.approvalNote||''};
+    }
+  }
+  if(!task)return;
+  document.getElementById('m-task-i').innerHTML=`
+    <div class="modal-title">Revisar Evidência</div>
+    <div class="modal-sub">${leader} → ${task.title}${type==='recur'?` · ${occ?.periodLabel||''}`:''}</div>
+    ${task.leaderNote?`<div style="background:#F8FAFC;border-left:3px solid #94A3B8;padding:8px 12px;border-radius:0 8px 8px 0;margin-bottom:10px"><b style="font-size:11px;color:#64748B">💬 Anotação do líder:</b><br><span style="font-size:12px">${task.leaderNote}</span></div>`:''}
+    ${task.evidence?`<div class="file-prev">📎 <b>${task.evidenceName||'Arquivo'}</b> <button class="btn btn-blue btn-sm" onclick="downloadEvidence('${leader}','${taskId}','${type}','${occDate||''}')">⬇️ Baixar</button></div>`:'<div style="background:#FEE2E2;padding:8px 12px;border-radius:8px;font-size:12px;color:#EF4444;margin-bottom:10px">Nenhum arquivo enviado</div>'}
+    <label class="lbl" style="margin-top:12px">Feedback para o líder</label>
+    <textarea class="inp" id="apnote" rows="3" placeholder="Ex: Aprovado! / Por favor refaça e reenvie...">${task.approvalNote||''}</textarea>
+    <div class="modal-footer">
+      <button class="btn btn-green" style="flex:1" onclick="approveWithNote('${leader}','${taskId}','${type}','${occDate||''}',true)">✅ Aprovar</button>
+      <button class="btn btn-red" style="flex:1" onclick="approveWithNote('${leader}','${taskId}','${type}','${occDate||''}',false)">↩ Solicitar revisão</button>
+      <button class="btn btn-gray" onclick="closeM('m-task')">Cancelar</button>
+    </div>`;
+  document.getElementById('m-task').classList.add('open');
+}
+function approveWithNote(leader,taskId,type,occDate,approve){
+  const note=document.getElementById('apnote').value;
+  if(!approve&&!note.trim()){alert('Informe o feedback.');return;}
+  approveTask(leader,taskId,type,occDate,approve,note);
+  closeM('m-task');
+}
+
+// ═══════════════════════════════════════════════════════
+// LEADER TASK MODAL (equipe, ver por líder)
+// ═══════════════════════════════════════════════════════
+function openLeaderTaskModal(taskId){
+  const rows=DB.leaderMeta.map(lm=>{
+    const t=(DB.leaderTasks[lm.name]||[]).find(x=>x.id===taskId);
+    if(!t) return`<tr><td colspan="6" style="color:#94A3B8;font-size:11px">${lm.name} — não atribuído</td></tr>`;
+    const s=LST[t.status]||LST['Não iniciada'];
+    return`<tr>
+      <td><div style="display:flex;align-items:center;gap:7px">${av(lm.name,22)} ${lm.name}</div></td>
+      <td>${lstChip(t.status)}</td>
+      <td><div style="width:70px">${pb(t.progress||0,s.c,7)}</div><span style="font-size:10px;color:#64748B">${t.progress||0}%</span></td>
+      <td style="font-size:11px;color:#64748B;max-width:150px">${t.leaderNote||'—'}</td>
+      <td>${t.evidence?`<button class="btn btn-blue btn-sm" onclick="downloadEvidence('${lm.name}','${taskId}','regular','')">⬇️ Baixar</button>`:'—'}</td>
+      <td>${t.status==='Aguardando aprovação'?`<button class="btn btn-sm btn-green" onclick="approveTask('${lm.name}','${taskId}','regular','',true,'')">✅</button>`:''}</td>
+    </tr>`;
+  }).join('');
+  const sample=(DB.leaderTasks[DB.leaderMeta[0]?.name]||[]).find(t=>t.id===taskId);
+  document.getElementById('m-task-i').innerHTML=`
+    <div class="modal-title">${sample?.title||'Tarefa'}</div>
+    <div style="background:#EFF6FF;border-left:3px solid #2563EB;padding:10px 14px;border-radius:0 8px 8px 0;margin-bottom:16px;font-size:12px;color:#0D2B55">${sample?.instruction||''}</div>
+    <div class="tbl-wrap"><table class="data"><thead><tr><th>Líder</th><th>Status</th><th>Progresso</th><th>Anotação</th><th>Arquivo</th><th>Ação</th></tr></thead><tbody>${rows}</tbody></table></div>
+    <div class="modal-footer"><button class="btn btn-gray" style="flex:1" onclick="closeM('m-task')">Fechar</button></div>`;
+  document.getElementById('m-task').classList.add('open');
+}
+
+// ═══════════════════════════════════════════════════════
+// ACTION MODAL
+// ═══════════════════════════════════════════════════════
+let eActId=null;
+function openNewAction(){eActId=null;showActModal({pillar:'P1',phase:'F2',what:'',who:'Gestor',start:'',end:'',continuous:false,frequency:'',status:'Não iniciada',priority:'Alta',approver:'Gestor',leaderTask:false,leaderInstruction:'',leaderAssigned:[]});}
+function openEditAction(id){eActId=id;const a=DB.actions.find(x=>x.id===id);if(a)showActModal(a);}
+function showActModal(a){
+  const cbs=DB.leaderMeta.map(lm=>`<label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-size:12px;padding:4px 6px;border-radius:6px;background:#fff;border:1px solid #E2E8F0">
+    <input type="checkbox" value="${lm.name}" class="ldr-cb" ${(a.leaderAssigned||[]).includes(lm.name)?' checked':''} style="cursor:pointer"/>
+    ${av(lm.name,20)} ${lm.name}</label>`).join('');
+  document.getElementById('m-action-i').innerHTML=`
+    <div class="modal-title">${eActId?'✏️ Editar':'➕ Nova'} Ação do Projeto</div>
+    <div class="modal-sub">Metodologia 3Qs — O Quê · Quem · Quando</div>
+    <div style="margin-bottom:14px"><label class="lbl">🎯 O QUÊ</label><input class="inp" id="fa-w" value="${a.what||''}" placeholder="Ex: Elaborar treinamento de Pipefy"/></div>
+    <div class="grid2" style="margin-bottom:14px">
+      <div><label class="lbl">🏛️ Pilar</label><select class="inp" id="fa-p">${PIDS.map(pid=>`<option value="${pid}"${a.pillar===pid?' selected':''}>${PILLARS[pid].icon} ${pid} – ${PILLARS[pid].label}</option>`).join('')}</select></div>
+      <div><label class="lbl">📅 Fase</label><select class="inp" id="fa-ph">${PHASES.map(ph=>`<option value="${ph.id}"${a.phase===ph.id?' selected':''}>${ph.label}</option>`).join('')}</select></div>
+    </div>
+    <div class="grid2" style="margin-bottom:14px">
+      <div><label class="lbl">👤 QUEM</label><select class="inp" id="fa-wh">${TEAM.map(t=>`<option${a.who===t?' selected':''}>${t}</option>`).join('')}</select></div>
+      <div><label class="lbl">⚡ Prioridade</label><select class="inp" id="fa-pr"><option${a.priority==='Alta'?' selected':''}>Alta</option><option${a.priority==='Média'?' selected':''}>Média</option><option${a.priority==='Baixa'?' selected':''}>Baixa</option></select></div>
+    </div>
+    <div style="background:#F8FAFC;border:1.5px solid #E2E8F0;border-radius:10px;padding:14px;margin-bottom:14px">
+      <label style="display:flex;align-items:center;gap:10px;cursor:pointer;margin-bottom:10px">
+        <input type="checkbox" id="fa-cont" ${a.continuous?' checked':''} style="width:17px;height:17px;cursor:pointer" onchange="toggleCont(this.checked)"/>
+        <div><div style="font-size:13px;font-weight:700">♻️ Ação Contínua / Recorrente</div><div style="font-size:11px;color:#64748B">Executa periodicamente até Dez/2026 — o sistema gera uma ocorrência por período</div></div>
+      </label>
+      <div id="fa-dates" style="${a.continuous?'display:none':''}"><div class="grid2">
+        <div><label class="lbl">Data de Início</label><input class="inp" type="date" id="fa-s" value="${a.start||''}"/></div>
+        <div><label class="lbl">Prazo Final</label><input class="inp" type="date" id="fa-e" value="${a.end||''}"/></div>
+      </div></div>
+      <div id="fa-cont-f" style="${a.continuous?'':'display:none'}"><div class="grid2">
+        <div><label class="lbl">Data de Início</label><input class="inp" type="date" id="fa-s2" value="${a.start||''}"/></div>
+        <div><label class="lbl">🔁 Periodicidade</label><select class="inp" id="fa-freq"><option value="daily"${a.frequency==='daily'?' selected':''}>Diária</option><option value="weekly"${a.frequency==='weekly'?' selected':''}>Semanal</option><option value="monthly"${a.frequency==='monthly'?' selected':''}>Mensal</option></select></div>
+      </div></div>
+    </div>
+    <div class="grid2" style="margin-bottom:14px">
+      <div><label class="lbl">📊 Status</label><select class="inp" id="fa-st">${Object.keys(ST).map(k=>`<option${a.status===k?' selected':''}>${k}</option>`).join('')}</select></div>
+      <div><label class="lbl">✅ Aprovador líder</label><select class="inp" id="fa-ap">${TEAM.map(t=>`<option${a.approver===t?' selected':''}>${t}</option>`).join('')}</select></div>
+    </div>
+    <div class="lt-panel${a.leaderTask?' on':''}" id="lt-panel">
+      <label style="display:flex;align-items:center;gap:10px;cursor:pointer">
+        <input type="checkbox" id="fa-lt" ${a.leaderTask?' checked':''} style="width:18px;height:18px;cursor:pointer" onchange="toggleLT(this.checked)"/>
+        <div><div style="font-size:13px;font-weight:700">🎯 Esta ação gera tarefas para os líderes</div><div style="font-size:11px;color:#64748B">Defina a instrução e selecione os líderes</div></div>
+      </label>
+      <div id="lt-fields" style="${a.leaderTask?'margin-top:14px':'display:none;margin-top:14px'}">
+        <div style="margin-bottom:12px"><label class="lbl">📝 Instrução para os líderes</label><textarea class="inp" id="fa-li" rows="3" placeholder="O que o líder deve fazer e como comprovar...">${a.leaderInstruction||''}</textarea></div>
+        <label class="lbl">👥 Líderes que devem executar</label>
+        <div class="flex-row" style="margin-bottom:8px">
+          <button type="button" class="btn btn-sm btn-blue" onclick="selAll(true)">Todos</button>
+          <button type="button" class="btn btn-sm btn-gray" onclick="selAll(false)">Limpar</button>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:6px;max-height:190px;overflow-y:auto;padding:2px">${cbs}</div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-gold" style="flex:1;padding:10px" onclick="saveActModal()">✅ Salvar</button>
+      <button class="btn btn-gray" style="padding:10px 18px" onclick="closeM('m-action')">Cancelar</button>
+    </div>`;
+  document.getElementById('m-action').classList.add('open');
+}
+function toggleCont(on){document.getElementById('fa-dates').style.display=on?'none':'';document.getElementById('fa-cont-f').style.display=on?'':'none';}
+function toggleLT(on){document.getElementById('lt-fields').style.display=on?'block':'none';document.getElementById('lt-fields').style.marginTop='14px';document.getElementById('lt-panel').classList.toggle('on',on);}
+function selAll(v){document.querySelectorAll('.ldr-cb').forEach(c=>c.checked=v);}
+function saveActModal(){
+  const what=document.getElementById('fa-w').value.trim();
+  const continuous=document.getElementById('fa-cont').checked;
+  const start=continuous?document.getElementById('fa-s2').value:document.getElementById('fa-s').value;
+  const end=continuous?'':document.getElementById('fa-e').value;
+  if(!what||!start){alert('Preencha O Quê e Data de Início.');return;}
+  if(!continuous&&!end){alert('Preencha o Prazo Final ou marque como Contínua.');return;}
+  const leaderTask=document.getElementById('fa-lt').checked;
+  const leaderInstruction=leaderTask?(document.getElementById('fa-li')?.value.trim()||''):'';
+  const leaderAssigned=leaderTask?Array.from(document.querySelectorAll('.ldr-cb:checked')).map(x=>x.value):[];
+  const a={
+    id:eActId||DB.nextId++,pillar:document.getElementById('fa-p').value,phase:document.getElementById('fa-ph').value,
+    what,who:document.getElementById('fa-wh').value,start,end,continuous,
+    frequency:continuous?document.getElementById('fa-freq').value:'',
+    status:document.getElementById('fa-st').value,priority:document.getElementById('fa-pr').value,
+    approver:document.getElementById('fa-ap').value,leaderTask,leaderInstruction,leaderAssigned,
+  };
+  if(eActId) DB.actions=DB.actions.map(x=>x.id===eActId?a:x);
+  else DB.actions.push(a);
+  if(leaderTask&&!continuous) syncLeaderTask(a);
+  else if(!leaderTask) removeLeaderTask(a.id);
+  saveDB();closeM('m-action');switchTab('actions');
+}
+
+// ═══════════════════════════════════════════════════════
+// LEADER MODAL
+// ═══════════════════════════════════════════════════════
+let eLdrId=null;
+function openNewLeader(){eLdrId=null;showLdrModal({name:'',username:'',pass:'lider123',area:'',email:'',phone:''});}
+function editLeader(id){eLdrId=id;const l=DB.leaderMeta.find(x=>x.id===id);if(l)showLdrModal(l);}
+function showLdrModal(l){
+  document.getElementById('m-task-i').innerHTML=`
+    <div class="modal-title">${eLdrId?'✏️ Editar':'➕ Novo'} Líder</div>
+    <div class="modal-sub">O líder acessa o portal com usuário e senha definidos aqui</div>
+    <div class="grid2" style="gap:12px">
+      <div><label class="lbl">Nome completo *</label><input class="inp" id="fl-n" value="${l.name||''}" placeholder="Ex: João Paulo"/></div>
+      <div><label class="lbl">Área / Setor</label><input class="inp" id="fl-a" value="${l.area||''}" placeholder="Ex: Operações SP"/></div>
+      <div><label class="lbl">Usuário *</label><input class="inp" id="fl-u" value="${l.username||''}" placeholder="Ex: joao.paulo"/></div>
+      <div><label class="lbl">Senha *</label><input class="inp" type="password" id="fl-p" value="${l.pass||'lider123'}"/></div>
+      <div><label class="lbl">E-mail</label><input class="inp" id="fl-e" value="${l.email||''}" placeholder="joao@inmestra.com.br"/></div>
+      <div><label class="lbl">Telefone</label><input class="inp" id="fl-ph" value="${l.phone||''}" placeholder="(11) 99999-9999"/></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-gold" style="flex:1" onclick="saveLdrModal()">✅ Salvar</button>
+      <button class="btn btn-gray" style="padding:10px 18px" onclick="closeM('m-task')">Cancelar</button>
+    </div>`;
+  document.getElementById('m-task').classList.add('open');
+}
+function saveLdrModal(){
+  const name=document.getElementById('fl-n').value.trim();
+  const username=document.getElementById('fl-u').value.trim().toLowerCase().replace(/\s+/g,'_');
+  const pass=document.getElementById('fl-p').value;
+  const area=document.getElementById('fl-a').value.trim();
+  const email=document.getElementById('fl-e').value.trim();
+  const phone=document.getElementById('fl-ph').value.trim();
+  if(!name||!username||!pass){alert('Nome, usuário e senha obrigatórios.');return;}
+  if(!eLdrId&&USERS[username]){alert('Usuário já existe.');return;}
+  if(eLdrId){
+    const old=DB.leaderMeta.find(x=>x.id===eLdrId);
+    if(old&&old.username!==username) delete USERS[old.username];
+    if(old&&old.name!==name&&DB.leaderTasks[old.name]){DB.leaderTasks[name]=DB.leaderTasks[old.name];delete DB.leaderTasks[old.name];}
+    if(old&&old.name!==name&&DB.recurOccs[old.name]){DB.recurOccs[name]=DB.recurOccs[old.name];delete DB.recurOccs[old.name];}
+    DB.leaderMeta=DB.leaderMeta.map(l=>l.id===eLdrId?{...l,name,username,pass,area,email,phone}:l);
+  } else {
+    const id=DB.nextId++;
+    DB.leaderMeta.push({id,name,username,pass,area,email,phone,active:true});
+    const tmpl=DB.leaderTasks[DB.leaderMeta[0]?.name]||[];
+    DB.leaderTasks[name]=tmpl.map(t=>blankTask(t));
+  }
+  rebuildUsers();saveDB();closeM('m-task');switchTab('ldr_mgmt');
+}
+
+// ═══════════════════════════════════════════════════════
+// PORTAL LÍDER — MINHAS TAREFAS (conclusivas)
+// ═══════════════════════════════════════════════════════
+function rMinhasTasks(){
+  const tasks=DB.leaderTasks[SES.display]||[];
+  const done=tasks.filter(t=>t.status==='Aprovado').length;
+  const prog=tasks.filter(t=>t.status==='Em andamento').length;
+  const review=tasks.filter(t=>t.status==='Aguardando aprovação').length;
+  const pend=tasks.filter(t=>t.status==='Não iniciada').length;
+  const score=ldrScore(SES.display);
+
+  const byPillar=PIDS.map(pid=>({pid,label:PILLARS[pid].label,color:PILLARS[pid].color,icon:PILLARS[pid].icon,tasks:tasks.filter(t=>t.pillar===pid)})).filter(p=>p.tasks.length);
+
+  const summary=`<div style="background:linear-gradient(135deg,#0D2B55,#1E4080);border-radius:14px;padding:18px 20px;margin-bottom:16px;display:flex;align-items:center;gap:16px;flex-wrap:wrap">
+    ${av(SES.display,52)}<div><div style="font-size:18px;font-weight:900;color:#fff">${SES.display}</div><div style="font-size:11px;color:#7898C0">Programa Liderança Estratégica · 2026</div></div>
+    <div style="display:flex;gap:12px;margin-left:auto;flex-wrap:wrap">
+      <div style="text-align:center"><div style="font-size:22px;font-weight:900;color:${scoreColor(score)}">${score}%</div><div style="font-size:10px;color:#7898C0">aderência</div></div>
+      <div style="text-align:center"><div style="font-size:22px;font-weight:900;color:#10B981">${done}</div><div style="font-size:10px;color:#7898C0">aprovadas</div></div>
+      <div style="text-align:center"><div style="font-size:22px;font-weight:900;color:#F59E0B">${prog}</div><div style="font-size:10px;color:#7898C0">andamento</div></div>
+      <div style="text-align:center"><div style="font-size:22px;font-weight:900;color:#7C3AED">${review}</div><div style="font-size:10px;color:#7898C0">revisão</div></div>
+      <div style="text-align:center"><div style="font-size:22px;font-weight:900;color:#94A3B8">${pend}</div><div style="font-size:10px;color:#7898C0">pendentes</div></div>
+    </div>
+  </div>`;
+
+  const sections=byPillar.map(pp=>{
+    const sDone=pp.tasks.filter(t=>t.status==='Aprovado').length;
+    const sPct=pp.tasks.length?Math.round(sDone/pp.tasks.length*100):0;
+    const cards=pp.tasks.map(t=>{
+      const s=LST[t.status]||LST['Não iniciada'];
+      const tColor=
+        t.status==='Concluído'||t.status==='Aprovado'?'#10B981':
+        t.status==='Aguardando aprovação'?'#7C3AED':
+        t.status==='Em revisão'?'#F97316':
+        t.status==='Em andamento'?'#F59E0B':'#E2E8F0';
+      const cls=
+        t.status==='Concluído'||t.status==='Aprovado'?'st-done':
+        t.status==='Aguardando aprovação'?'st-review':
+        t.status==='Em revisão'?'st-prog':
+        t.status==='Em andamento'?'st-prog':'';
+      return`<div class="ltask ${cls}" onclick="openMyTask('${t.id}')">
+        <div style="height:3px;background:${tColor};border-radius:12px 12px 0 0"></div>
+        <div class="ltask-hd">
+          <div style="display:flex;gap:4px;margin-bottom:8px;flex-wrap:wrap">
+            ${lstChip(t.status)}
+            ${t.requiresEvidence?`<span style="font-size:10px;color:#64748B;background:#F1F5F9;padding:2px 6px;border-radius:8px">📎 Evidência</span>`:''}
+          </div>
+          <div style="font-size:13px;font-weight:800;color:#0D2B55;margin-bottom:4px;line-height:1.3">${t.title}</div>
+          <div style="font-size:11px;color:#64748B;line-height:1.5;margin-bottom:8px">${t.instruction||'Clique para ver instruções'}</div>
+          ${t.approvalNote&&(t.status==='Em andamento'||t.status==='Em revisão')?`<div style="font-size:11px;color:${t.status==='Em revisão'?'#F97316':'#7C3AED'};background:${t.status==='Em revisão'?'#FFF7ED':'#F5F3FF'};padding:6px 8px;border-radius:6px">${t.status==='Em revisão'?'↩':'💬'} ${t.approvalNote}</div>`:''}
+        </div>
+        <div class="ltask-ft">
+          <div style="flex:1"><div style="display:flex;justify-content:space-between;font-size:10px;color:#64748B;margin-bottom:3px"><span>Progresso</span><b style="color:${s.c}">${t.progress||0}%</b></div>${pb(t.progress||0,s.c,6)}</div>
+          <span style="font-size:10px;color:#64748B;margin-left:8px;flex-shrink:0"><b>${t.approver}</b></span>
+        </div>
+      </div>`;
+    }).join('');
+    return`<div style="margin-bottom:20px">
+      <div style="display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:10px;margin-bottom:10px;background:${pp.color}15;border-left:3px solid ${pp.color}">
+        <span style="font-size:18px">${pp.icon}</span>
+        <div style="flex:1"><div style="font-size:13px;font-weight:800;color:${pp.color}">${pp.label}</div><div style="font-size:11px;color:#64748B">${pp.tasks.length} tarefas · ${sDone} aprovadas</div></div>
+        <div style="text-align:right"><div style="font-size:16px;font-weight:800;color:${scoreColor(sPct)}">${sPct}%</div><div style="width:80px">${pb(sPct,scoreColor(sPct),6)}</div></div>
+      </div>
+      <div class="task-grid">${cards}</div>
+    </div>`;
+  }).join('');
+  return summary+sections;
+}
+
+function openMyTask(taskId){
+  const t=(DB.leaderTasks[SES.display]||[]).find(x=>x.id===taskId);
+  if(!t)return;
+  document.getElementById('m-ltask-i').innerHTML=`
+    <div style="display:flex;gap:8px;margin-bottom:8px">${pillarBadge(t.pillar)}${lstChip(t.status)}</div>
+    <div class="modal-title">${t.title}</div>
+    <div style="background:#EFF6FF;border-left:3px solid #2563EB;padding:10px 14px;border-radius:0 8px 8px 0;margin-bottom:18px;font-size:12px;color:#0D2B55;line-height:1.6">${t.instruction||'Nenhuma instrução específica.'}</div>
+    <div style="margin-bottom:18px">
+      <label class="lbl">Meu Progresso</label>
+      <div style="display:flex;align-items:center;gap:12px">
+        <input type="range" id="tp" min="0" max="100" step="1" value="${t.progress||0}" oninput="onProg(this.value)" style="flex:1;height:6px;cursor:pointer;accent-color:#2563EB" ${(t.status==='Aprovado'||t.status==='Concluído')?' disabled':''}/>
+        <div style="min-width:52px;text-align:center;font-size:22px;font-weight:900;color:#2563EB" id="pd">${t.progress||0}%</div>
+      </div>
+      <div style="margin-top:6px;font-size:11px;text-align:center;color:#64748B" id="ph"></div>
+    </div>
+    <div style="margin-bottom:16px"><label class="lbl">💬 Minha anotação / comentário</label><textarea class="inp" id="tn" rows="3" placeholder="Descreva seu andamento, dificuldades...">${t.leaderNote||''}</textarea></div>
+    <div id="ev-sec" style="${(t.progress||0)===100&&t.status!=='Aprovado'?'':'display:none'}">
+      <div style="background:#FFFBEB;border:1.5px solid #F59E0B;border-radius:10px;padding:14px;margin-bottom:16px">
+        <div style="font-size:13px;font-weight:800;color:#92400E;margin-bottom:6px">📎 Comprovante Obrigatório para Envio</div>
+        <div style="font-size:12px;color:#78350F;margin-bottom:10px">Annexe um comprovante para enviar para aprovação.</div>
+        ${t.evidence?`<div class="file-prev">📎 <b>${t.evidenceName}</b> <span style="font-size:11px;color:#10B981">✅ Já enviado</span></div>`:''}
+        <input type="file" id="tf" class="inp" accept=".pdf,.jpg,.jpeg,.png,.doc,.docx,.xlsx" style="padding:8px"/>
+        <div style="font-size:10px;color:#64748B;margin-top:4px">PDF, imagem, Word, Excel</div>
+      </div>
+    </div>
+    ${t.approvalNote?`<div style="background:#F5F3FF;border-left:3px solid #7C3AED;padding:10px 12px;border-radius:0 8px 8px 0;margin-bottom:16px"><b style="font-size:11px;color:#7C3AED">💬 Feedback do aprovador:</b><div style="font-size:12px;margin-top:4px">${t.approvalNote}</div></div>`:''}
+    <div style="background:#F8FAFC;border-radius:8px;padding:8px 12px;margin-bottom:16px;font-size:12px;color:#64748B;display:flex;justify-content:space-between"><span>Aprovador: <b style="color:#0D2B55">${t.approver}</b></span>${t.approvedAt?`<span style="color:#10B981">✅ Aprovado em ${t.approvedAt}</span>`:''}</div>
+    <div class="modal-footer">
+      ${(t.status!=='Aprovado'&&t.status!=='Concluído')?`<button class="btn btn-navy" style="flex:1" onclick="saveMyTask('${taskId}')">💾 ${t.status==='Em revisão'?'Corrigir e Reenviar':'Salvar'}</button>`:''}
+      <button class="btn btn-gray" style="padding:10px 18px" onclick="closeM('m-ltask')">Fechar</button>
+    </div>`;
+  onProg(t.progress||0,false);
+  document.getElementById('m-ltask').classList.add('open');
+}
+function onProg(val,update=true){
+  const v=parseInt(val);
+  if(update){document.getElementById('pd').textContent=v+'%';}
+  const hint=v===0?'⬜ Não iniciada':v<100?'🟡 Em andamento':'⏳ Insira o comprovante para enviar à aprovação';
+  const hEl=document.getElementById('ph');if(hEl)hEl.textContent=hint;
+  const evSec=document.getElementById('ev-sec');if(evSec)evSec.style.display=v===100?'block':'none';
+}
+function saveMyTask(taskId){
+  const prog=parseInt(document.getElementById('tp').value)||0;
+  const note=document.getElementById('tn').value;
+  const fileEl=document.getElementById('tf');
+  const existing=(DB.leaderTasks[SES.display]||[]).find(t=>t.id===taskId);
+  if(prog===100){
+    const hasEx=existing?.evidence;
+    const hasNew=fileEl?.files?.[0];
+    if(!hasEx&&!hasNew){alert('📎 Anexe o comprovante para enviar à aprovação.');return;}
+    if(hasNew){
+      const f=fileEl.files[0];
+      const r=new FileReader();
+      r.onload=e=>{
+        updLdrTask(taskId,prog,note,'Aguardando aprovação',f.name,e.target.result,'uploaded');
+        closeM('m-ltask');switchTab('minhastasks');
+      };r.readAsDataURL(f);return;
+    }
+    // Re-send with existing evidence (works for revision re-submission too)
+    updLdrTask(taskId,prog,note,'Aguardando aprovação',existing.evidenceName,existing.evidenceDataUrl,existing.evidence);
+  } else {
+    // 0% = Não iniciada, 1-99% = Em andamento (works even when coming back from Em revisão)
+    const st=prog===0?'Não iniciada':'Em andamento';
+    updLdrTask(taskId,prog,note,st,null,null,null);
+  }
+  closeM('m-ltask');switchTab('minhastasks');
+}
+function updLdrTask(taskId,progress,note,status,evidenceName,evidenceDataUrl,evidence){
+  DB.leaderTasks[SES.display]=(DB.leaderTasks[SES.display]||[]).map(t=>{
+    if(t.id!==taskId)return t;
+    // Always keep existing evidence if new one not provided
+    const newEvName=evidenceName||t.evidenceName||'';
+    const newEvUrl=evidenceDataUrl||t.evidenceDataUrl||'';
+    const newEv=evidence||t.evidence||null;
+    return{...t,progress,leaderNote:note,status,evidenceName:newEvName,evidenceDataUrl:newEvUrl,evidence:newEv};
+  });saveDB();
+}
+
+// ═══════════════════════════════════════════════════════
+// PORTAL LÍDER — RECORRENTES
+// ═══════════════════════════════════════════════════════
+function rRecurrencesLdr(){
+  const recurActions=DB.actions.filter(a=>a.continuous&&a.leaderTask);
+  const assigned=recurActions.filter(a=>{
+    if(!a.leaderAssigned||a.leaderAssigned.length===0) return true;
+    return a.leaderAssigned.includes(SES.display);
+  });
+  if(!assigned.length) return`<div class="card" style="text-align:center;padding:40px;color:#64748B">Nenhuma tarefa recorrente atribuída a você.</div>`;
+
+  const html=assigned.map(a=>{
+    const today=getToday();
+    const occs=getOccurrencesForLeader(String(a.id),SES.display,a.frequency,a.start);
+    const p=PILLARS[a.pillar]||{color:'#64748B',icon:'📌'};
+
+    // Groups using all state names — must include 'progress' and 'revision'
+    const missedOccs   = occs.filter(o=>o.state==='missed');
+    const openOccs     = occs.filter(o=>o.state==='open');      // window open, not started
+    const progressOccs = occs.filter(o=>o.state==='progress');  // in progress 1-99%
+    const revisionOccs = occs.filter(o=>o.state==='revision');  // rejected, needs redo
+    const waitingOccs  = occs.filter(o=>o.state==='waiting');   // sent for approval
+    const approvedOccs = occs.filter(o=>o.state==='approved');
+    const futureOccs   = occs.filter(o=>o.state==='pending').slice(0,5);
+
+    // Actionable = any state where leader can still interact
+    const canAct = o => ['open','progress','revision','waiting'].includes(o.state);
+    const stateStyle = o=>{
+      const cfg=OST[o.state]||OST['pending'];
+      return`background:${cfg.bg};border-color:${cfg.c}`;
+    };
+
+    const occRow=o=>`
+      <div class="rec-board-card" style="${stateStyle(o)}" onclick="openRecOcc('${a.id}','${o.date}','${SES.display}')">
+        <span style="font-size:16px">${OST[o.state]?.dot||'🔲'}</span>
+        <div style="flex:1">
+          <div style="font-size:12px;font-weight:700;color:#0D2B55">${o.periodLabel}</div>
+          <div style="font-size:10px;color:#64748B">
+            ${OST[o.state]?.label||''}
+            ${o.state==='open'?` · até ${fmtD(o.periodEnd)}`:''}
+          </div>
+        </div>
+        ${o.approvedAt?`<span style="font-size:10px;color:#10B981;font-weight:700">✅ ${o.approvedAt}</span>`:''}
+        ${canAct(o)?`<span style="font-size:11px;color:#2563EB;font-weight:700;flex-shrink:0">→ Abrir</span>`:''}
+      </div>`;
+
+    // Score for this action
+    const due=occs.filter(o=>o.state!=='pending').length;
+    const done=approvedOccs.length;
+    const pct=due?Math.round(done/due*100):0;
+
+    return`<div class="card">
+      <div style="display:flex;align-items:flex-start;gap:12px;margin-bottom:12px">
+        <div style="flex:1">
+          <div style="display:flex;gap:6px;margin-bottom:5px;flex-wrap:wrap">
+            ${pillarBadge(a.pillar)}
+            <span class="badge-cont">♻️ ${freqLabel(a.frequency)}</span>
+            ${openOccs.length?`<span style="background:#FEF3C7;border:1px solid #F59E0B;color:#92400E;font-size:10px;font-weight:700;padding:2px 7px;border-radius:8px;animation:pulse 1.5s infinite">⚡ JANELA ABERTA</span>`:''}
+          </div>
+          <div style="font-size:15px;font-weight:800;color:#0D2B55">${a.what}</div>
+          <div style="font-size:11px;color:#64748B;margin-top:2px;line-height:1.5">${a.leaderInstruction||'Conclua cada ocorrência dentro do período correspondente.'}</div>
+        </div>
+        <div style="text-align:right;min-width:72px">
+          <div style="font-size:20px;font-weight:800;color:${scoreColor(pct)}">${pct}%</div>
+          <div style="font-size:10px;color:#64748B">${done}/${due} feitas</div>
+          ${missedOccs.length?`<div style="font-size:11px;font-weight:800;color:#EF4444;margin-top:2px">❌ ${missedOccs.length} perdida(s)</div>`:''}
+        </div>
+      </div>
+
+      ${revisionOccs.length?`
+        <div style="background:#FFF7ED;border:1.5px solid #F97316;border-radius:10px;padding:12px;margin-bottom:12px">
+          <div style="font-size:12px;font-weight:800;color:#92400E;margin-bottom:8px">↩ Em revisão — corrija e reenvie!</div>
+          ${revisionOccs.map(o=>occRow(o)).join('')}
+        </div>`:''
+      }
+      ${openOccs.length||progressOccs.length?`
+        <div style="background:#FFFBEB;border:1.5px solid #F59E0B;border-radius:10px;padding:12px;margin-bottom:12px">
+          <div style="font-size:12px;font-weight:800;color:#92400E;margin-bottom:8px">⏰ Período em aberto — realize agora!</div>
+          ${[...openOccs,...progressOccs].map(o=>occRow(o)).join('')}
+        </div>`:''
+      }
+      ${waitingOccs.length?`
+        <div style="margin-bottom:10px">
+          <div style="font-size:11px;font-weight:700;color:#7C3AED;margin-bottom:6px">📋 Aguardando aprovação (${waitingOccs.length})</div>
+          ${waitingOccs.map(o=>occRow(o)).join('')}
+        </div>`:''
+      }
+      ${missedOccs.length?`
+        <details>
+          <summary style="font-size:11px;font-weight:700;color:#EF4444;cursor:pointer;padding:4px 0">❌ Não realizadas (${missedOccs.length})</summary>
+          <div style="margin-top:6px">${missedOccs.map(o=>occRow(o)).join('')}</div>
+        </details>`:''
+      }
+      ${approvedOccs.length?`
+        <details>
+          <summary style="font-size:11px;font-weight:700;color:#10B981;cursor:pointer;padding:4px 0">✅ Aprovadas (${approvedOccs.length})</summary>
+          <div style="margin-top:6px">${approvedOccs.map(o=>occRow(o)).join('')}</div>
+        </details>`:''
+      }
+      ${futureOccs.length?`
+        <details>
+          <summary style="font-size:11px;font-weight:700;color:#94A3B8;cursor:pointer;padding:4px 0">🔲 Próximas (${futureOccs.length} mostradas)</summary>
+          <div style="margin-top:6px">${futureOccs.map(o=>occRow(o)).join('')}</div>
+        </details>`:''
+      }
+    </div>`;
+  }).join('');
+  return`
+    <div class="card" style="padding:12px 16px;margin-bottom:12px">
+      <div class="flex-row">
+        <div>
+          <b>Tarefas Recorrentes — ${assigned.length} ativa(s)</b>
+          <div style="font-size:11px;color:#64748B;margin-top:2px">Complete cada tarefa dentro da janela do período correspondente</div>
+        </div>
+        <div style="margin-left:auto;font-size:11px;color:#64748B">
+          <span style="background:#FEF3C7;padding:2px 8px;border-radius:6px;font-weight:700;color:#92400E">⬜ Não iniciada</span> = janela aberta &nbsp;
+          <span style="background:#F8FAFC;padding:2px 8px;border-radius:6px;font-weight:700;color:#94A3B8">🔲 Pendente</span> = ainda não chegou a hora
+        </div>
+      </div>
+    </div>
+    ${html}`;
+}
+
+// Open an occurrence detail modal (leader or equipe)
+function openRecOcc(actionId,occDate,leaderName){
+  const aIdKey=String(actionId);
+  const a=DB.actions.find(x=>String(x.id)===aIdKey);
+  if(!a)return;
+  const occs=getOccurrencesForLeader(aIdKey,leaderName,a.frequency,a.start);
+  const occ=occs.find(o=>o.date===occDate);
+  if(!occ)return;
+  const isLdr=SES.role==='lider';
+  const isApproved=occ.state==='approved';
+  const isOpen=occ.state==='open'||occ.state==='progress';  // window active
+  const isPending=occ.state==='pending';
+  const isMissed=occ.state==='missed';
+  const isWaiting=occ.state==='waiting';
+  const isRevision=occ.state==='revision';
+  const canEdit=isLdr&&(isOpen||isRevision)&&!isApproved;
+
+  const ostCfg=OST[occ.state]||OST['pending'];
+  const curProg=occ.progress||0;
+
+  const windowBanner=isPending
+    ?`<div style="background:#F8FAFC;border:1px solid #E2E8F0;border-radius:8px;padding:10px 14px;margin-bottom:14px;font-size:12px;color:#475569">
+        🔲 <b>Pendente.</b> Esta janela abre em <b>${fmtD(occ.date)}</b>.
+      </div>`
+    :isMissed
+    ?`<div style="background:#FEE2E2;border:1px solid #FCA5A5;border-radius:8px;padding:10px 14px;margin-bottom:14px;font-size:12px;color:#991B1B">
+        ❌ <b>Não realizada.</b> A janela encerrou em <b>${fmtD(occ.periodEnd)}</b>.
+      </div>`
+    :isOpen
+    ?`<div style="background:#FFFBEB;border:1.5px solid #F59E0B;border-radius:8px;padding:10px 14px;margin-bottom:14px;font-size:12px;color:#92400E">
+        ⚡ <b>Janela aberta!</b> Realize até <b>${fmtD(occ.periodEnd)}</b>.
+      </div>`
+    :isRevision
+    ?`<div style="background:#FFF7ED;border:1.5px solid #F97316;border-radius:8px;padding:10px 14px;margin-bottom:14px;font-size:12px;color:#92400E">
+        ↩ <b>Em revisão.</b> O aprovador pediu ajustes. Corrija e reenvie.
+      </div>`
+    :'';
+
+  document.getElementById('m-ltask-i').innerHTML=`
+    <div style="display:flex;gap:8px;margin-bottom:8px;flex-wrap:wrap">
+      ${pillarBadge(a.pillar)}
+      <span class="badge-cont">♻️ ${freqLabel(a.frequency)}</span>
+      <span style="font-size:12px;font-weight:700;color:#7C3AED">📅 ${occ.periodLabel}</span>
+    </div>
+    <div class="modal-title">${a.what}</div>
+    <div style="background:#EFF6FF;border-left:3px solid #2563EB;padding:10px 14px;border-radius:0 8px 8px 0;margin-bottom:14px;font-size:12px;color:#0D2B55;line-height:1.6">
+      ${a.leaderInstruction||'Complete esta tarefa dentro do período.'}
+    </div>
+    <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap">
+      <span class="chip" style="background:${ostCfg.bg};color:${ostCfg.c}">${ostCfg.dot} ${ostCfg.label}</span>
+      ${occ.approvedAt?`<span style="font-size:11px;color:#10B981;font-weight:700">✅ Aprovado em ${occ.approvedAt}</span>`:''}
+    </div>
+    ${windowBanner}
+
+    ${canEdit?`
+      <div style="margin-bottom:16px">
+        <label class="lbl">Progresso</label>
+        <div style="display:flex;align-items:center;gap:12px">
+          <input type="range" id="rprog" min="0" max="100" step="1" value="${curProg}"
+            oninput="onRecProg(this.value)"
+            style="flex:1;height:6px;cursor:pointer;accent-color:#2563EB"/>
+          <div style="min-width:48px;text-align:center;font-size:20px;font-weight:900;color:#2563EB" id="rpd">${curProg}%</div>
+        </div>
+        <div style="font-size:11px;text-align:center;color:#64748B;margin-top:4px" id="rph"></div>
+      </div>
+      <div style="margin-bottom:14px">
+        <label class="lbl">💬 Minha anotação</label>
+        <textarea class="inp" id="rtn" rows="3" placeholder="Descreva o que foi feito neste período...">${occ.note||''}</textarea>
+      </div>
+      <div id="rec-ev-sec" style="${curProg>=100?'':'display:none'}">
+        <div style="background:#FFFBEB;border:1.5px solid #F59E0B;border-radius:10px;padding:14px;margin-bottom:14px">
+          <div style="font-size:13px;font-weight:800;color:#92400E;margin-bottom:4px">📎 Comprovante desta ocorrência (obrigatório)</div>
+          ${occ.evidence?`<div class="file-prev">📎 <b>${occ.evidenceName}</b> <span style="font-size:11px;color:#10B981">✅ Já enviado</span></div>`:''}
+          <input type="file" id="rtf" class="inp" accept=".pdf,.jpg,.jpeg,.png,.doc,.docx,.xlsx" style="padding:8px"/>
+        </div>
+      </div>
+    `:''}
+
+    ${(isWaiting||isApproved||isMissed||!isLdr)&&occ.note?`<div style="background:#F8FAFC;border-left:3px solid #94A3B8;padding:8px 12px;border-radius:0 8px 8px 0;margin-bottom:10px"><b style="font-size:11px;color:#64748B">💬 Anotação do líder:</b><br><span style="font-size:12px">${occ.note}</span></div>`:''}
+    ${occ.evidence&&(isApproved||isWaiting||!isLdr)?`<div class="file-prev">📎 <b>${occ.evidenceName}</b> <button class="btn btn-blue btn-sm" onclick="downloadEvidence('${leaderName}','${aIdKey}','recur','${occDate}')">⬇️ Baixar</button></div>`:''}
+    ${occ.approvalNote?`<div style="background:#FFF7ED;border-left:3px solid #F97316;padding:10px 12px;border-radius:0 8px 8px 0;margin-bottom:14px"><b style="font-size:11px;color:#F97316">💬 Feedback do aprovador:</b><div style="font-size:12px;margin-top:4px">${occ.approvalNote}</div></div>`:''}
+
+    <div class="modal-footer">
+      ${canEdit?`<button class="btn btn-navy" style="flex:1" onclick="saveRecOcc('${aIdKey}','${occDate}','${leaderName}')">💾 Salvar / Enviar para Aprovação</button>`:''}
+      ${!isLdr&&isWaiting?`
+        <button class="btn btn-green" style="flex:1" onclick="approveTask('${leaderName}','${aIdKey}','recur','${occDate}',true,'');closeM('m-ltask')">✅ Aprovar</button>
+        <button class="btn btn-red btn-sm" onclick="openApprovalModal('${leaderName}','${aIdKey}','recur','${occDate}')">↩ Revisão</button>
+      `:''}
+      <button class="btn btn-gray" style="padding:10px 18px" onclick="closeM('m-ltask')">Fechar</button>
+    </div>`;
+  document.getElementById('m-ltask').classList.add('open');
+  // Initialize hint on load
+  if(canEdit) onRecProg(curProg, false);
+}
+function onRecProg(val, update=true){
+  const v=parseInt(val);
+  if(update){const el=document.getElementById('rpd');if(el)el.textContent=v+'%';}
+  const hint=v===0?'⬜ Não iniciada':v<100?'🟡 Em andamento':'⏳ Insira comprovante para enviar à aprovação';
+  const hEl=document.getElementById('rph');if(hEl)hEl.textContent=hint;
+  const evSec=document.getElementById('rec-ev-sec');if(evSec)evSec.style.display=v>=100?'block':'none';
+}
+function saveRecOcc(actionId,occDate,leaderName){
+  const note=document.getElementById('rtn')?.value||'';
+  const progEl=document.getElementById('rprog');
+  const progress=progEl?parseInt(progEl.value)||0:100;
+  const fileEl=document.getElementById('rtf');
+  // Coerce to number for DB.actions lookup, String for recurOccs key
+  const aIdNum=parseInt(actionId);
+  const aIdKey=String(actionId);
+  const a=DB.actions.find(x=>x.id===aIdNum||x.id===actionId);
+  if(!a){console.error('Action not found:',actionId);return;}
+  const occs=getOccurrencesForLeader(aIdKey,leaderName,a.frequency,a.start);
+  const occ=occs.find(o=>o.date===occDate);
+
+  // If progress < 100, just save progress+note without requiring evidence
+  if(progress<100){
+    if(!DB.recurOccs[leaderName]) DB.recurOccs[leaderName]={};
+    if(!DB.recurOccs[leaderName][aIdKey]) DB.recurOccs[leaderName][aIdKey]={};
+    const prev=DB.recurOccs[leaderName][aIdKey][occDate]||{};
+    DB.recurOccs[leaderName][aIdKey][occDate]={...prev,
+      status:progress===0?'':'progress',
+      progress,note,
+    };
+    saveDB();closeM('m-ltask');switchTab('recurrences_ldr');return;
+  }
+
+  // progress = 100: require evidence
+  const hasEx=occ?.evidence;
+  const hasNew=fileEl?.files?.[0];
+  if(!hasEx&&!hasNew){alert('📎 Anexe o comprovante de conclusão para enviar à aprovação.');return;}
+
+  const persist=(evidenceName,evidenceDataUrl,evidence)=>{
+    if(!DB.recurOccs[leaderName]) DB.recurOccs[leaderName]={};
+    if(!DB.recurOccs[leaderName][aIdKey]) DB.recurOccs[leaderName][aIdKey]={};
+    const prev=DB.recurOccs[leaderName][aIdKey][occDate]||{};
+    // status='waiting' triggers approval queue on equipe side
+    DB.recurOccs[leaderName][aIdKey][occDate]={...prev,
+      status:'waiting',progress:100,note,evidenceName,evidenceDataUrl,evidence
+    };
+    saveDB();closeM('m-ltask');switchTab('recurrences_ldr');
+  };
+  if(hasNew){
+    const f=fileEl.files[0];
+    const r=new FileReader();
+    r.onload=ev=>persist(f.name,ev.target.result,'uploaded');
+    r.readAsDataURL(f);
+  } else {persist(occ.evidenceName,occ.evidenceDataUrl,occ.evidence);}
+}
+
+// ═══════════════════════════════════════════════════════
+// MEU PROGRESSO
+// ═══════════════════════════════════════════════════════
+function rMeuProgresso(){
+  const tasks=DB.leaderTasks[SES.display]||[];
+  const score=ldrScore(SES.display);
+  const done=tasks.filter(t=>t.status==='Aprovado').length;
+  const prog=tasks.filter(t=>t.status==='Em andamento').length;
+  const rev=tasks.filter(t=>t.status==='Aguardando aprovação').length;
+  const pend=tasks.filter(t=>t.status==='Não iniciada').length;
+  const byPillar=PIDS.map(pid=>{
+    const pt=tasks.filter(t=>t.pillar===pid);
+    const pd=pt.filter(t=>t.status==='Aprovado').length;
+    const pp=pt.filter(t=>t.status!=='Não iniciada'&&t.status!=='Aprovado').length;
+    const pct=pt.length?Math.round(((pd+pp*.5)/pt.length)*100):0;
+    return{...PILLARS[pid],total:pt.length,done:pd,pct};
+  });
+  const history=tasks.filter(t=>t.status==='Aprovado');
+  return`
+    <div style="display:flex;align-items:center;gap:16px;margin-bottom:16px;padding:20px;background:#fff;border-radius:14px;box-shadow:0 2px 10px rgba(0,0,0,.06)">
+      ${av(SES.display,56)}<div><div style="font-size:22px;font-weight:900">${SES.display}</div><div style="font-size:13px;color:#64748B">Programa Liderança Estratégica · 2026</div></div>
+      <div style="margin-left:auto;text-align:center"><div style="font-size:40px;font-weight:900;color:${scoreColor(score)}">${score}%</div><div style="font-size:12px;color:#64748B">aderência geral</div></div>
+    </div>
+    <div class="grid2">
+      <div class="card">
+        <div class="sec-title">Status geral</div>
+        <div style="display:flex;align-items:center;gap:20px">
+          ${donut([{v:done,c:'#10B981',l:'Aprovado'},{v:prog,c:'#F59E0B',l:'Andamento'},{v:rev,c:'#7C3AED',l:'Revisão'},{v:pend,c:'#E2E8F0',l:'Pendente'}],120)}
+          <div style="flex:1">${[['Aprovadas',done,'#10B981'],['Em andamento',prog,'#F59E0B'],['Aguardando',rev,'#7C3AED'],['Pendentes',pend,'#E2E8F0']].map(([k,v,c])=>`
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:7px">
+              <div style="width:10px;height:10px;border-radius:3px;background:${c}"></div>
+              <span style="font-size:12px;flex:1">${k}</span><b style="font-size:12px;color:${c}">${v}</b>
+            </div>`).join('')}</div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="sec-title">Por pilar</div>
+        ${byPillar.map(p=>`<div style="margin-bottom:12px">
+          <div style="display:flex;justify-content:space-between;margin-bottom:4px"><span style="font-size:12px;font-weight:700;color:${p.color}">${p.icon} ${p.label}</span><span style="font-size:11px;color:#64748B">${p.done}/${p.total} · <b style="color:${p.color}">${p.pct}%</b></span></div>
+          ${pb(p.pct,p.color,9)}</div>`).join('')}
+      </div>
+    </div>
+    ${history.length?`<div class="card"><div class="sec-title">📜 Histórico de Aprovadas</div>
+      ${history.map(t=>`<div style="display:flex;align-items:center;gap:10px;padding:8px 12px;background:#F0FDF4;border-radius:8px;margin-bottom:6px;border-left:3px solid #10B981">
+        ${pillarBadge(t.pillar)}<span style="font-size:13px;font-weight:600;flex:1">${t.title}</span>
+        <span style="font-size:11px;color:#10B981;font-weight:700">✅${t.approvedAt?' · '+t.approvedAt:''}</span>
+      </div>`).join('')}</div>`:''}`;
+}
+
+// ═══════════════════════════════════════════════════════
+// RANKING
+// ═══════════════════════════════════════════════════════
+function rRanking(){
+  const scores=DB.leaderMeta.map(l=>({name:l.name,score:ldrScore(l.name)})).sort((a,b)=>b.score-a.score);
+  const myPos=scores.findIndex(l=>l.name===SES.display);
+  return`
+    <div class="card" style="background:linear-gradient(135deg,#0D2B55,#1A3A6B);color:#fff;margin-bottom:16px">
+      <div style="font-size:11px;color:#7898C0;font-weight:700;letter-spacing:1px;margin-bottom:4px">SUA POSIÇÃO</div>
+      <div style="font-size:48px;font-weight:900;color:#F59E0B">#${myPos+1}</div>
+      <div style="font-size:14px;color:#B0C4DE">de ${scores.length} líderes · ${scores[myPos]?.score||0}% de aderência</div>
+    </div>
+    <div class="card"><div class="sec-title" style="margin-bottom:14px">🏆 Ranking Completo</div>
+      ${scores.map((l,i)=>{const isMe=l.name===SES.display;return`<div style="display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;margin-bottom:6px;background:${isMe?'#EFF6FF':i<3?'#FFFBEB':'transparent'};border:${isMe?'1.5px solid #2563EB':'1px solid transparent'}">
+        <span style="font-size:20px;font-weight:900;color:${i===0?'#F59E0B':i===1?'#94A3B8':i===2?'#CD7C21':'#CBD5E1'};min-width:36px;text-align:center">${i===0?'🥇':i===1?'🥈':i===2?'🥉':`#${i+1}`}</span>
+        ${av(l.name,36)}<div style="flex:1"><div style="font-size:13px;font-weight:${isMe?800:600};color:${isMe?'#2563EB':'#0D2B55'}">${l.name}${isMe?' (você)':''}</div><div style="width:160px;margin-top:4px">${pb(l.score,scoreColor(l.score),7)}</div></div>
+        <b style="font-size:16px;color:${scoreColor(l.score)}">${l.score}%</b>
+      </div>`;}).join('')}
+    </div>`;
+}
+
+// ═══════════════════════════════════════════════════════
+// UTILS
+// ═══════════════════════════════════════════════════════
+function closeM(id){document.getElementById(id).classList.remove('open');}
+document.querySelectorAll('.overlay').forEach(o=>o.addEventListener('click',function(e){if(e.target===this)this.classList.remove('open');}));
+</script>
+</body>
+</html>
