@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-<title>Inmestra – Programa Liderança Estratégica</title>
+<title>Inmestra – Programa Liderança Estratégica v8</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'Segoe UI',system-ui,sans-serif;background:#0D2B55;min-height:100vh}
@@ -18,9 +18,7 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#0D2B55;min-height:1
 .login-box{background:#fff;border-radius:20px;padding:40px 44px;width:380px;box-shadow:0 24px 60px rgba(0,0,0,.3)}
 .login-logo{color:var(--navy);font-size:22px;font-weight:900;letter-spacing:1px;margin-bottom:4px}
 .login-sub{color:var(--gray);font-size:12px;margin-bottom:28px}
-.login-role-tabs{display:flex;gap:4px;background:var(--graybg);border-radius:10px;padding:4px;margin-bottom:24px}
-.login-role-tab{flex:1;padding:7px 0;text-align:center;font-size:12px;font-weight:700;border:none;background:transparent;border-radius:7px;cursor:pointer;color:var(--gray);transition:all .2s}
-.login-role-tab.active{background:var(--navy);color:#fff}
+
 .login-inp{width:100%;border:1.5px solid var(--grayl);border-radius:10px;padding:11px 14px;font-size:14px;margin-bottom:12px;font-family:inherit;outline:none;transition:border .2s;color:#0D2B55}
 .login-inp:focus{border-color:var(--blue)}
 .login-btn{width:100%;background:var(--navy);color:#fff;border:none;border-radius:10px;padding:13px;font-size:14px;font-weight:700;cursor:pointer}
@@ -141,17 +139,10 @@ table.data tr:nth-child(even) td{background:var(--graybg)}
   <div class="login-box">
     <div class="login-logo">INMESTRA</div>
     <div class="login-sub">Programa Liderança Estratégica</div>
-    <div class="login-role-tabs">
-      <button class="login-role-tab active" onclick="setLR('equipe',this)">Equipe Projeto</button>
-      <button class="login-role-tab" onclick="setLR('lider',this)">Líder</button>
-    </div>
-    <input class="login-inp" type="text" id="lu" placeholder="Usuário"/>
-    <input class="login-inp" type="password" id="lp" placeholder="Senha"/>
+    <input class="login-inp" type="text" id="lu" placeholder="Usuário" style="margin-top:16px"/>
+    <input class="login-inp" type="password" id="lp" placeholder="Senha" onkeydown="if(event.key==='Enter')doLogin()"/>
     <button class="login-btn" onclick="doLogin()">Entrar</button>
     <div class="login-err" id="lerr"></div>
-    <div style="margin-top:14px;font-size:11px;color:var(--gray);text-align:center;line-height:1.9">
-      <b>Equipe:</b> gestor/123 · consultor/123 · rh/123
-    </div>
   </div>
 </div>
 
@@ -500,7 +491,7 @@ let USERS={
 function loadDB(){
   try{DB=JSON.parse(localStorage.getItem('im4_db')||'{}')}catch{DB={}}
   if(!DB.actions) DB.actions=defActions();
-  if(!DB.leaderMeta) DB.leaderMeta=DEF_LEADERS.map((n,i)=>({id:i+1,name:n,username:n.toLowerCase().replace(/\s+/g,'_'),pass:'lider123',area:'',email:'',phone:'',active:true}));
+  if(!DB.leaderMeta) DB.leaderMeta=DEF_LEADERS.map((n,i)=>({id:i+1,name:n,username:n.toLowerCase().replace(/\s+/g,'_'),pass:'lider123',area:'',email:'',phone:'',active:true,isManager:false}));
   if(!DB.leaderTasks){
     const tmpl=defLeaderTasks(DB.actions);
     DB.leaderTasks={};
@@ -513,12 +504,14 @@ function loadDB(){
 }
 function rebuildUsers(){
   USERS={
-    gestor:{role:'equipe',display:'Gestor',team:'Gestor',pass:'123'},
-    consultor:{role:'equipe',display:'Consultor',team:'Consultor',pass:'123'},
-    rh:{role:'equipe',display:'RH',team:'RH',pass:'123'},
+    adm:{role:'gestor',display:'Administrador',pass:'@adm123',isManager:true}
   };
-  (DB.leaderMeta||[]).forEach(l=>{USERS[l.username]={role:'lider',display:l.name,pass:l.pass};});
+  (DB.leaderMeta||[]).forEach(l=>{
+    USERS[l.username]={role:l.isManager?'gestor':'lider',display:l.name,pass:l.pass,isManager:!!l.isManager};
+  });
 }
+function getManagers(){return(DB.leaderMeta||[]).filter(l=>l.isManager);}
+function getManagerNames(){return getManagers().map(l=>l.name);}
 function saveDB(){try{localStorage.setItem('im4_db',JSON.stringify(DB));}catch{}}
 loadDB();
 
@@ -545,19 +538,19 @@ function removeLeaderTask(actionId){
 // SESSION
 // ═══════════════════════════════════════════════════════
 let SES={};
-let loginRole='equipe';
 let curTab='dashboard';
 let fPillar='ALL',fWho='ALL',fPhase='ALL',fType='ALL',ganttF='ALL',adherL=null;
 
-function setLR(r,el){loginRole=r;document.querySelectorAll('.login-role-tab').forEach(b=>b.classList.remove('active'));el.classList.add('active');}
 function doLogin(){
   const u=document.getElementById('lu').value.trim().toLowerCase();
   const p=document.getElementById('lp').value;
   const usr=USERS[u];
   if(!usr||usr.pass!==p){document.getElementById('lerr').textContent='Usuário ou senha incorretos.';return}
-  if(loginRole==='lider'&&usr.role!=='lider'){document.getElementById('lerr').textContent='Use a aba Equipe Projeto.';return}
-  if(loginRole==='equipe'&&usr.role!=='equipe'){document.getElementById('lerr').textContent='Use a aba Líder.';return}
-  SES={user:u,role:usr.role,display:usr.display,team:usr.team||null};
+  if(usr.role==='gestor'){
+    SES={user:u,role:'equipe',display:usr.display,team:null,isManager:true,leaderName:usr.display};
+  } else {
+    SES={user:u,role:usr.role,display:usr.display,team:null};
+  }
   document.getElementById('login-screen').style.display='none';
   document.getElementById('app').style.display='flex';
   if(!adherL&&DB.leaderMeta.length) adherL=DB.leaderMeta[0].name;
@@ -1103,6 +1096,7 @@ function rLeadersMgmt(){
   return`
     <div class="card" style="padding:12px 16px;margin-bottom:12px">
       <div class="flex-row"><b>${DB.leaderMeta.length} líderes cadastrados</b>
+        <span style="font-size:12px;color:#64748B">${getManagers().length} gestor(es) do programa</span>
         <button class="btn btn-gold" style="margin-left:auto" onclick="openNewLeader()">+ Novo Líder</button>
       </div>
     </div>
@@ -1110,9 +1104,9 @@ function rLeadersMgmt(){
       const sc=ldrScore(l.name);
       const tasks=DB.leaderTasks[l.name]||[];
       const done=tasks.filter(t=>t.status==='Aprovado').length;
-      return`<div class="card" style="border-top:3px solid ${aColor(l.name)}">
+      return`<div class="card" style="border-top:3px solid ${l.isManager?'#F59E0B':aColor(l.name)}">
         <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
-          ${av(l.name,40)}<div style="flex:1"><div style="font-size:14px;font-weight:800">${l.name}</div><div style="font-size:11px;color:#64748B">${l.area||'Área não definida'}</div><div style="font-size:10px;color:#94A3B8">@${l.username}</div></div>
+          ${av(l.name,40)}<div style="flex:1"><div style="font-size:14px;font-weight:800">${l.name}${l.isManager?` <span style="font-size:10px;background:#FEF3C7;color:#92400E;padding:1px 6px;border-radius:8px;font-weight:700">⭐ Gestor</span>`:''}</div><div style="font-size:11px;color:#64748B">${l.area||'Área não definida'}</div><div style="font-size:10px;color:#94A3B8">@${l.username}</div></div>
         </div>
         <div style="margin-bottom:10px"><div style="display:flex;justify-content:space-between;font-size:11px;color:#64748B;margin-bottom:3px"><span>Aderência</span><b style="color:${scoreColor(sc)}">${sc}%</b></div>${pb(sc,scoreColor(sc),10)}</div>
         <div style="display:flex;gap:8px;font-size:11px;margin-bottom:10px">
@@ -1320,12 +1314,19 @@ function openLeaderTaskModal(taskId){
 // ACTION MODAL
 // ═══════════════════════════════════════════════════════
 let eActId=null;
-function openNewAction(){eActId=null;showActModal({pillar:'P1',phase:'F2',what:'',who:'Gestor',start:'',end:'',continuous:false,frequency:'',status:'Não iniciada',priority:'Alta',approver:'Gestor',leaderTask:false,leaderInstruction:'',leaderAssigned:[]});}
+function openNewAction(){eActId=null;showActModal({pillar:'P1',phase:'F2',what:'',who:'',start:'',end:'',continuous:false,frequency:'',status:'Não iniciada',priority:'Alta',approver:'',requiresApproval:false,leaderTask:false,leaderInstruction:'',leaderAssigned:[]});}
 function openEditAction(id){eActId=id;const a=DB.actions.find(x=>x.id===id);if(a)showActModal(a);}
 function showActModal(a){
   const cbs=DB.leaderMeta.map(lm=>`<label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-size:12px;padding:4px 6px;border-radius:6px;background:#fff;border:1px solid #E2E8F0">
     <input type="checkbox" value="${lm.name}" class="ldr-cb" ${(a.leaderAssigned||[]).includes(lm.name)?' checked':''} style="cursor:pointer"/>
     ${av(lm.name,20)} ${lm.name}</label>`).join('');
+  // QUEM = todos os líderes (gestores primeiro)
+  const whoList=[...DB.leaderMeta.filter(l=>l.isManager),...DB.leaderMeta.filter(l=>!l.isManager)];
+  const whoOpts=whoList.map(l=>`<option value="${l.name}"${a.who===l.name?' selected':''}>${l.isManager?'⭐ ':''} ${l.name}</option>`).join('');
+  // Aprovadores = apenas gestores cadastrados
+  const managers=getManagers();
+  const hasApproval=a.requiresApproval!==false&&(a.approver||managers.length>0);
+  const approverOpts=managers.map(l=>`<option value="${l.name}"${a.approver===l.name?' selected':''}>${l.name}</option>`).join('');
   document.getElementById('m-action-i').innerHTML=`
     <div class="modal-title">${eActId?'✏️ Editar':'➕ Nova'} Ação do Projeto</div>
     <div class="modal-sub">Metodologia 3Qs — O Quê · Quem · Quando</div>
@@ -1335,7 +1336,7 @@ function showActModal(a){
       <div><label class="lbl">📅 Fase</label><select class="inp" id="fa-ph">${PHASES.map(ph=>`<option value="${ph.id}"${a.phase===ph.id?' selected':''}>${ph.label}</option>`).join('')}</select></div>
     </div>
     <div class="grid2" style="margin-bottom:14px">
-      <div><label class="lbl">👤 QUEM</label><select class="inp" id="fa-wh">${TEAM.map(t=>`<option${a.who===t?' selected':''}>${t}</option>`).join('')}</select></div>
+      <div><label class="lbl">👤 QUEM (responsável)</label><select class="inp" id="fa-wh"><option value="">Selecione...</option>${whoOpts}</select></div>
       <div><label class="lbl">⚡ Prioridade</label><select class="inp" id="fa-pr"><option${a.priority==='Alta'?' selected':''}>Alta</option><option${a.priority==='Média'?' selected':''}>Média</option><option${a.priority==='Baixa'?' selected':''}>Baixa</option></select></div>
     </div>
     <div style="background:#F8FAFC;border:1.5px solid #E2E8F0;border-radius:10px;padding:14px;margin-bottom:14px">
@@ -1352,9 +1353,15 @@ function showActModal(a){
         <div><label class="lbl">🔁 Periodicidade</label><select class="inp" id="fa-freq"><option value="daily"${a.frequency==='daily'?' selected':''}>Diária</option><option value="weekly"${a.frequency==='weekly'?' selected':''}>Semanal</option><option value="monthly"${a.frequency==='monthly'?' selected':''}>Mensal</option></select></div>
       </div></div>
     </div>
-    <div class="grid2" style="margin-bottom:14px">
-      <div><label class="lbl">📊 Status</label><select class="inp" id="fa-st">${Object.keys(ST).map(k=>`<option${a.status===k?' selected':''}>${k}</option>`).join('')}</select></div>
-      <div><label class="lbl">✅ Aprovador líder</label><select class="inp" id="fa-ap">${TEAM.map(t=>`<option${a.approver===t?' selected':''}>${t}</option>`).join('')}</select></div>
+    <div style="margin-bottom:14px"><label class="lbl">📊 Status</label><select class="inp" id="fa-st">${Object.keys(ST).map(k=>`<option${a.status===k?' selected':''}>${k}</option>`).join('')}</select></div>
+    <div style="background:#F0FDF4;border:1.5px solid #86EFAC;border-radius:10px;padding:14px;margin-bottom:14px">
+      <label style="display:flex;align-items:center;gap:10px;cursor:pointer;margin-bottom:${hasApproval?'12px':'0'}">
+        <input type="checkbox" id="fa-req-ap" ${hasApproval?' checked':''} style="width:17px;height:17px;cursor:pointer" onchange="toggleApproval(this.checked)"/>
+        <div><div style="font-size:13px;font-weight:700">✅ Esta ação requer aprovação</div><div style="font-size:11px;color:#64748B">O líder precisará enviar evidência e aguardar aprovação de um gestor</div></div>
+      </label>
+      <div id="fa-ap-field" style="${hasApproval?'':'display:none'}">
+        ${managers.length===0?`<div style="background:#FEE2E2;padding:8px 12px;border-radius:8px;font-size:12px;color:#991B1B">⚠️ Nenhum gestor cadastrado ainda. Cadastre um líder como Gestor do Programa primeiro.</div>`:`<label class="lbl">👤 Aprovador</label><select class="inp" id="fa-ap">${approverOpts}</select>`}
+      </div>
     </div>
     <div class="lt-panel${a.leaderTask?' on':''}" id="lt-panel">
       <label style="display:flex;align-items:center;gap:10px;cursor:pointer">
@@ -1378,6 +1385,7 @@ function showActModal(a){
   document.getElementById('m-action').classList.add('open');
 }
 function toggleCont(on){document.getElementById('fa-dates').style.display=on?'none':'';document.getElementById('fa-cont-f').style.display=on?'':'none';}
+function toggleApproval(on){document.getElementById('fa-ap-field').style.display=on?'block':'none';}
 function toggleLT(on){document.getElementById('lt-fields').style.display=on?'block':'none';document.getElementById('lt-fields').style.marginTop='14px';document.getElementById('lt-panel').classList.toggle('on',on);}
 function selAll(v){document.querySelectorAll('.ldr-cb').forEach(c=>c.checked=v);}
 function saveActModal(){
@@ -1390,12 +1398,15 @@ function saveActModal(){
   const leaderTask=document.getElementById('fa-lt').checked;
   const leaderInstruction=leaderTask?(document.getElementById('fa-li')?.value.trim()||''):'';
   const leaderAssigned=leaderTask?Array.from(document.querySelectorAll('.ldr-cb:checked')).map(x=>x.value):[];
+  const requiresApproval=document.getElementById('fa-req-ap').checked;
+  const approverEl=document.getElementById('fa-ap');
+  const approver=requiresApproval&&approverEl?approverEl.value:'';
   const a={
     id:eActId||DB.nextId++,pillar:document.getElementById('fa-p').value,phase:document.getElementById('fa-ph').value,
     what,who:document.getElementById('fa-wh').value,start,end,continuous,
     frequency:continuous?document.getElementById('fa-freq').value:'',
     status:document.getElementById('fa-st').value,priority:document.getElementById('fa-pr').value,
-    approver:document.getElementById('fa-ap').value,leaderTask,leaderInstruction,leaderAssigned,
+    requiresApproval,approver,leaderTask,leaderInstruction,leaderAssigned,
   };
   if(eActId) DB.actions=DB.actions.map(x=>x.id===eActId?a:x);
   else DB.actions.push(a);
@@ -1422,6 +1433,15 @@ function showLdrModal(l){
       <div><label class="lbl">E-mail</label><input class="inp" id="fl-e" value="${l.email||''}" placeholder="joao@inmestra.com.br"/></div>
       <div><label class="lbl">Telefone</label><input class="inp" id="fl-ph" value="${l.phone||''}" placeholder="(11) 99999-9999"/></div>
     </div>
+    <div style="margin-top:14px;padding:14px;background:#FFFBEB;border:1.5px solid #F59E0B;border-radius:10px">
+      <label style="display:flex;align-items:center;gap:10px;cursor:pointer">
+        <input type="checkbox" id="fl-mg" ${l.isManager?' checked':''} style="width:18px;height:18px;cursor:pointer"/>
+        <div>
+          <div style="font-size:13px;font-weight:800;color:#92400E">⭐ Gestor do Programa</div>
+          <div style="font-size:11px;color:#78350F;margin-top:2px">Gestor tem acesso ao painel de gestão completo (dashboard, ações, aprovações, etc.) além do portal de líder. Pode ser aprovador de tarefas.</div>
+        </div>
+      </label>
+    </div>
     <div class="modal-footer">
       <button class="btn btn-gold" style="flex:1" onclick="saveLdrModal()">✅ Salvar</button>
       <button class="btn btn-gray" style="padding:10px 18px" onclick="closeM('m-task')">Cancelar</button>
@@ -1435,6 +1455,7 @@ function saveLdrModal(){
   const area=document.getElementById('fl-a').value.trim();
   const email=document.getElementById('fl-e').value.trim();
   const phone=document.getElementById('fl-ph').value.trim();
+  const isManager=document.getElementById('fl-mg').checked;
   if(!name||!username||!pass){alert('Nome, usuário e senha obrigatórios.');return;}
   if(!eLdrId&&USERS[username]){alert('Usuário já existe.');return;}
   if(eLdrId){
@@ -1442,10 +1463,10 @@ function saveLdrModal(){
     if(old&&old.username!==username) delete USERS[old.username];
     if(old&&old.name!==name&&DB.leaderTasks[old.name]){DB.leaderTasks[name]=DB.leaderTasks[old.name];delete DB.leaderTasks[old.name];}
     if(old&&old.name!==name&&DB.recurOccs[old.name]){DB.recurOccs[name]=DB.recurOccs[old.name];delete DB.recurOccs[old.name];}
-    DB.leaderMeta=DB.leaderMeta.map(l=>l.id===eLdrId?{...l,name,username,pass,area,email,phone}:l);
+    DB.leaderMeta=DB.leaderMeta.map(l=>l.id===eLdrId?{...l,name,username,pass,area,email,phone,isManager}:l);
   } else {
     const id=DB.nextId++;
-    DB.leaderMeta.push({id,name,username,pass,area,email,phone,active:true});
+    DB.leaderMeta.push({id,name,username,pass,area,email,phone,active:true,isManager});
     const tmpl=DB.leaderTasks[DB.leaderMeta[0]?.name]||[];
     DB.leaderTasks[name]=tmpl.map(t=>blankTask(t));
   }
