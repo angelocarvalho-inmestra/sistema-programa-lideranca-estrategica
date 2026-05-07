@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-<title>Inmestra – Programa Liderança Estratégica v8</title>
+<title>Inmestra – Programa Liderança Estratégica v9</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'Segoe UI',system-ui,sans-serif;background:#0D2B55;min-height:100vh}
@@ -134,8 +134,43 @@ table.data tr:nth-child(even) td{background:var(--graybg)}
 </head>
 <body>
 
+<!-- LOADING SCREEN -->
+<div id="loading-screen" style="position:fixed;inset:0;background:linear-gradient(135deg,#0D2B55,#1A3A6B);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999;color:#fff">
+  <div style="font-size:24px;font-weight:900;letter-spacing:2px;color:#F59E0B;margin-bottom:8px">INMESTRA</div>
+  <div style="font-size:12px;color:#7898C0;letter-spacing:2px;margin-bottom:32px">PROGRAMA LIDERANÇA ESTRATÉGICA</div>
+  <div id="loading-msg" style="font-size:13px;color:#B0C4DE;display:flex;align-items:center;gap:10px">
+    <div style="width:18px;height:18px;border:2px solid #F59E0B;border-top-color:transparent;border-radius:50%;animation:spin .8s linear infinite"></div>
+    <span id="loading-text">Conectando ao servidor...</span>
+  </div>
+  <div id="loading-error" style="display:none;margin-top:24px;background:rgba(239,68,68,.15);border:1px solid rgba(239,68,68,.4);border-radius:12px;padding:16px 24px;max-width:400px;text-align:center">
+    <div style="font-weight:700;margin-bottom:6px">⚠️ Sem conexão com o servidor</div>
+    <div style="font-size:12px;color:#FCA5A5;margin-bottom:12px" id="loading-error-msg"></div>
+    <button onclick="initApp_retry()" style="background:#F59E0B;color:#0D2B55;border:none;padding:8px 20px;border-radius:8px;font-weight:700;cursor:pointer;margin-right:8px">Tentar novamente</button>
+    <button onclick="useLocalMode()" style="background:rgba(255,255,255,.1);color:#fff;border:1px solid rgba(255,255,255,.2);padding:8px 20px;border-radius:8px;font-weight:700;cursor:pointer">Modo offline</button>
+  </div>
+</div>
+<style>@keyframes spin{to{transform:rotate(360deg)}}</style>
+
+<!-- CONFIG MODAL (aparece quando SHEETS_URL não está configurado) -->
+<div id="config-screen" style="display:none;position:fixed;inset:0;background:linear-gradient(135deg,#0D2B55,#1A3A6B);align-items:center;justify-content:center;z-index:9998">
+  <div style="background:#fff;border-radius:20px;padding:36px 40px;width:min(94vw,480px);box-shadow:0 24px 60px rgba(0,0,0,.4)">
+    <div style="font-size:20px;font-weight:900;color:#0D2B55;margin-bottom:4px">⚙️ Configurar Servidor</div>
+    <div style="font-size:12px;color:#64748B;margin-bottom:20px">Cole a URL do Google Apps Script publicado</div>
+    <label style="font-size:11px;font-weight:700;color:#64748B;text-transform:uppercase;letter-spacing:.5px">URL do Apps Script (Web App)</label>
+    <input id="cfg-url" type="text" placeholder="https://script.google.com/macros/s/.../exec"
+      style="width:100%;border:1.5px solid #E2E8F0;border-radius:8px;padding:10px 12px;font-size:13px;margin:8px 0 4px;outline:none;color:#0D2B55"/>
+    <label style="font-size:11px;font-weight:700;color:#64748B;text-transform:uppercase;letter-spacing:.5px;margin-top:12px;display:block">Token de segurança</label>
+    <input id="cfg-token" type="text" placeholder="inmestra_2026_token_seguro"
+      value="inmestra_2026_token_seguro"
+      style="width:100%;border:1.5px solid #E2E8F0;border-radius:8px;padding:10px 12px;font-size:13px;margin:8px 0 16px;outline:none;color:#0D2B55"/>
+    <button onclick="saveConfig()" style="width:100%;background:#0D2B55;color:#fff;border:none;border-radius:10px;padding:12px;font-size:14px;font-weight:700;cursor:pointer">Salvar e Conectar</button>
+    <button onclick="useLocalMode()" style="width:100%;margin-top:8px;background:transparent;color:#64748B;border:1px solid #E2E8F0;border-radius:10px;padding:10px;font-size:12px;font-weight:600;cursor:pointer">Usar modo offline (localStorage)</button>
+    <div id="cfg-err" style="color:#EF4444;font-size:12px;margin-top:8px;text-align:center"></div>
+  </div>
+</div>
+
 <!-- LOGIN -->
-<div id="login-screen">
+<div id="login-screen" style="display:none">
   <div class="login-box">
     <div class="login-logo">INMESTRA</div>
     <div class="login-sub">Programa Liderança Estratégica</div>
@@ -152,9 +187,14 @@ table.data tr:nth-child(even) td{background:var(--graybg)}
     <div><div class="header-logo">INMESTRA<span class="header-sub">LIDERANÇA ESTRATÉGICA</span></div></div>
     <div id="h-pill" class="header-pill"></div>
     <div id="h-stats" style="font-size:11px;color:#9AB0CC;font-weight:700"></div>
+    <div id="h-sync" style="font-size:11px;color:#7898C0;display:none;align-items:center;gap:5px">
+      <div style="width:12px;height:12px;border:2px solid #F59E0B;border-top-color:transparent;border-radius:50%;animation:spin .8s linear infinite"></div>
+      Salvando...
+    </div>
     <div class="header-user">
       <div class="hav" id="h-av">?</div>
       <span class="header-name" id="h-name"></span>
+      <button class="logout-btn" onclick="openCfgModal()" title="Configurações" style="margin-right:4px">⚙️</button>
       <button class="logout-btn" onclick="doLogout()">Sair</button>
     </div>
   </div>
@@ -479,16 +519,122 @@ function blankTask(tmpl){
 }
 
 // ═══════════════════════════════════════════════════════
+// GOOGLE SHEETS INTEGRATION — v9
+// ═══════════════════════════════════════════════════════
+let SHEETS_URL = '';     // URL do Apps Script — salvo em localStorage
+let SHEETS_TOKEN = '';   // Token de segurança
+let LOCAL_MODE = false;  // fallback offline
+
+function getCfg(){
+  SHEETS_URL   = localStorage.getItem('im_sheets_url')   || '';
+  SHEETS_TOKEN = localStorage.getItem('im_sheets_token') || 'inmestra_2026_token_seguro';
+}
+function saveConfig(){
+  const url   = document.getElementById('cfg-url').value.trim();
+  const token = document.getElementById('cfg-token').value.trim();
+  if(!url){ document.getElementById('cfg-err').textContent='Cole a URL do Apps Script.'; return; }
+  localStorage.setItem('im_sheets_url', url);
+  localStorage.setItem('im_sheets_token', token);
+  SHEETS_URL   = url;
+  SHEETS_TOKEN = token;
+  document.getElementById('config-screen').style.display='none';
+  document.getElementById('loading-screen').style.display='flex';
+  document.getElementById('loading-error').style.display='none';
+  initApp_start();
+}
+function useLocalMode(){
+  LOCAL_MODE = true;
+  document.getElementById('config-screen').style.display='none';
+  document.getElementById('loading-screen').style.display='flex';
+  document.getElementById('loading-error').style.display='none';
+  document.getElementById('loading-text').textContent='Carregando dados locais...';
+  loadDB_local();
+  hideSplash();
+}
+
+// ── API call helper ──
+async function sheetsAPI(payload){
+  const res = await fetch(SHEETS_URL, {
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({ token: SHEETS_TOKEN, ...payload }),
+    redirect:'follow'
+  });
+  if(!res.ok) throw new Error('HTTP '+res.status);
+  const data = await res.json();
+  if(!data.ok) throw new Error(data.error || 'Erro desconhecido');
+  return data;
+}
+
+// ── Splash / Loading ──
+function hideSplash(){
+  setTimeout(()=>{
+    document.getElementById('loading-screen').style.display='none';
+    document.getElementById('login-screen').style.display='flex';
+  }, 400);
+}
+function showSplashError(msg){
+  document.getElementById('loading-error').style.display='block';
+  document.getElementById('loading-error-msg').textContent = msg;
+  document.getElementById('loading-text').style.display='none';
+}
+
+// ── Init sequence (chamado ao abrir a página) ──
+async function initApp_start(){
+  document.getElementById('loading-text').textContent='Conectando ao servidor...';
+  try {
+    // Teste de ping
+    await sheetsAPI({ action:'ping' });
+    document.getElementById('loading-text').textContent='Carregando dados...';
+    await loadDB();
+    hideSplash();
+  } catch(err){
+    showSplashError('Não foi possível conectar: ' + err.message);
+  }
+}
+function initApp_retry(){
+  document.getElementById('loading-error').style.display='none';
+  document.getElementById('loading-text').style.display='flex';
+  document.getElementById('loading-text').textContent='Reconectando...';
+  initApp_start();
+}
+
+// ═══════════════════════════════════════════════════════
 // DB
 // ═══════════════════════════════════════════════════════
 let DB={};
-let USERS={
-  gestor:{role:'equipe',display:'Gestor',team:'Gestor',pass:'123'},
-  consultor:{role:'equipe',display:'Consultor',team:'Consultor',pass:'123'},
-  rh:{role:'equipe',display:'RH',team:'RH',pass:'123'},
-};
+let USERS={};
 
-function loadDB(){
+// Carrega do Sheets (ou localStorage se offline)
+async function loadDB(){
+  if(LOCAL_MODE){ loadDB_local(); return; }
+  try {
+    const resp = await sheetsAPI({ action:'loadDB' });
+    const remote = resp.data || {};
+    // Se o servidor não tiver dados ainda, usar defaults
+    DB.actions     = remote.actions     || defActions();
+    DB.leaderMeta  = remote.leaderMeta  || DEF_LEADERS.map((n,i)=>({id:i+1,name:n,username:n.toLowerCase().replace(/\s+/g,'_'),pass:'lider123',area:'',email:'',phone:'',active:true,isManager:false}));
+    if(!remote.leaderTasks){
+      const tmpl=defLeaderTasks(DB.actions);
+      DB.leaderTasks={};
+      DB.leaderMeta.forEach(lm=>{DB.leaderTasks[lm.name]=tmpl.map(t=>blankTask(t));});
+    } else {
+      DB.leaderTasks = remote.leaderTasks;
+    }
+    DB.recurOccs   = remote.recurOccs   || {};
+    DB.nextId      = remote.nextId      || 200;
+    // Cache local como fallback
+    try{ localStorage.setItem('im4_db', JSON.stringify(DB)); }catch{}
+  } catch(err){
+    // Falhou — tenta cache local
+    console.warn('Sheets offline, usando cache local:', err);
+    loadDB_local();
+  }
+  rebuildUsers();
+}
+
+// Fallback: carrega do localStorage
+function loadDB_local(){
   try{DB=JSON.parse(localStorage.getItem('im4_db')||'{}')}catch{DB={}}
   if(!DB.actions) DB.actions=defActions();
   if(!DB.leaderMeta) DB.leaderMeta=DEF_LEADERS.map((n,i)=>({id:i+1,name:n,username:n.toLowerCase().replace(/\s+/g,'_'),pass:'lider123',area:'',email:'',phone:'',active:true,isManager:false}));
@@ -497,11 +643,11 @@ function loadDB(){
     DB.leaderTasks={};
     DB.leaderMeta.forEach(lm=>{DB.leaderTasks[lm.name]=tmpl.map(t=>blankTask(t));});
   }
-  // recurOccs: {leaderName: {actionId: {date: {status,note,evidence,...}}}}
   if(!DB.recurOccs) DB.recurOccs={};
   if(!DB.nextId) DB.nextId=200;
   rebuildUsers();
 }
+
 function rebuildUsers(){
   USERS={
     adm:{role:'gestor',display:'Administrador',pass:'@adm123',isManager:true}
@@ -512,8 +658,28 @@ function rebuildUsers(){
 }
 function getManagers(){return(DB.leaderMeta||[]).filter(l=>l.isManager);}
 function getManagerNames(){return getManagers().map(l=>l.name);}
-function saveDB(){try{localStorage.setItem('im4_db',JSON.stringify(DB));}catch{}}
-loadDB();
+
+// saveDB: salva no Sheets e no localStorage (cache)
+function saveDB(){
+  // Cache local imediato
+  try{ localStorage.setItem('im4_db', JSON.stringify(DB)); }catch{}
+  // Envio assíncrono para o Sheets
+  if(!LOCAL_MODE && SHEETS_URL){
+    sheetsAPI({ action:'saveDB', db: JSON.stringify(DB) })
+      .catch(err=>console.warn('saveDB remoto falhou:', err));
+  }
+}
+
+// ── Inicialização do app ao carregar a página ──
+getCfg();
+if(!SHEETS_URL){
+  // Não configurado ainda — mostrar tela de config
+  document.getElementById('loading-screen').style.display='none';
+  document.getElementById('config-screen').style.display='flex';
+} else {
+  // URL já salva — iniciar
+  initApp_start();
+}
 
 function syncLeaderTask(action){
   if(!action.leaderTask) return;
@@ -1959,6 +2125,34 @@ function rRanking(){
         <b style="font-size:16px;color:${scoreColor(l.score)}">${l.score}%</b>
       </div>`;}).join('')}
     </div>`;
+}
+
+// ═══════════════════════════════════════════════════════
+// SYNC VISUAL + CONFIG MODAL
+// ═══════════════════════════════════════════════════════
+let _syncTimer = null;
+function showSync(){
+  const el = document.getElementById('h-sync');
+  if(el){ el.style.display='flex'; }
+  clearTimeout(_syncTimer);
+  _syncTimer = setTimeout(()=>{ if(el) el.style.display='none'; }, 3000);
+}
+
+// Override saveDB para mostrar o ícone de sync
+const _saveDB_orig = saveDB;
+function saveDB(){
+  showSync();
+  _saveDB_orig();
+}
+
+function openCfgModal(){
+  const url = localStorage.getItem('im_sheets_url')||'';
+  const tok = localStorage.getItem('im_sheets_token')||'inmestra_2026_token_seguro';
+  const mode = LOCAL_MODE ? '⚠️ Modo offline ativo' : '✅ Conectado ao Google Sheets';
+  document.getElementById('cfg-url').value   = url;
+  document.getElementById('cfg-token').value = tok;
+  document.getElementById('cfg-err').textContent = mode;
+  document.getElementById('config-screen').style.display='flex';
 }
 
 // ═══════════════════════════════════════════════════════
