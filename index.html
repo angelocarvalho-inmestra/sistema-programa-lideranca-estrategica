@@ -554,14 +554,14 @@ function useLocalMode(){
 
 // ── API call helper ──
 async function sheetsAPI(payload){
-  const res = await fetch(SHEETS_URL, {
-    method:'POST',
-    headers:{'Content-Type':'application/json'},
-    body: JSON.stringify({ token: SHEETS_TOKEN, ...payload }),
-    redirect:'follow'
-  });
+  // GET com params na URL — evita CORS do Apps Script
+  const p = new URLSearchParams({ token: SHEETS_TOKEN, action: payload.action||'' });
+  if(payload.db) p.append('db', encodeURIComponent(payload.db));
+  const res = await fetch(SHEETS_URL + '?' + p.toString(), { redirect:'follow' });
   if(!res.ok) throw new Error('HTTP '+res.status);
-  const data = await res.json();
+  const text = await res.text();
+  let data;
+  try{ data = JSON.parse(text); } catch{ throw new Error('Resposta invalida: '+text.slice(0,100)); }
   if(!data.ok) throw new Error(data.error || 'Erro desconhecido');
   return data;
 }
