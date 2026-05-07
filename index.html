@@ -677,6 +677,7 @@ function getManagerNames(){return getManagers().map(l=>l.name);}
 
 // saveDB: salva no Sheets e no localStorage (cache)
 function saveDB(){
+  showSync();
   // Cache local imediato
   try{ localStorage.setItem('im4_db', JSON.stringify(DB)); }catch{}
   // Envio assíncrono para o Sheets
@@ -2154,12 +2155,7 @@ function showSync(){
   _syncTimer = setTimeout(()=>{ if(el) el.style.display='none'; }, 3000);
 }
 
-// Override saveDB para mostrar o ícone de sync
-const _saveDB_orig = saveDB;
-function saveDB(){
-  showSync();
-  _saveDB_orig();
-}
+// saveDB com sync visual — definido abaixo na função principal
 
 function openCfgModal(){
   const url = localStorage.getItem('im_sheets_url')||'';
