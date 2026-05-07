@@ -554,9 +554,25 @@ function useLocalMode(){
 
 // ── API call helper ──
 async function sheetsAPI(payload){
-  // GET com params na URL — evita CORS do Apps Script
+  // Para leituras (ping, loadDB): GET simples
+  // Para escrita (saveDB): POST via form-data (sem preflight = sem CORS)
+  if(payload.action === 'saveDB' || payload.action === 'savePart'){
+    const form = new FormData();
+    form.append('token', SHEETS_TOKEN);
+    form.append('action', payload.action);
+    if(payload.db)   form.append('db',   payload.db);
+    if(payload.key)  form.append('key',  payload.key);
+    if(payload.data) form.append('data', payload.data);
+    const res = await fetch(SHEETS_URL, { method:'POST', body: form, redirect:'follow' });
+    if(!res.ok) throw new Error('HTTP '+res.status);
+    const text = await res.text();
+    let data;
+    try{ data = JSON.parse(text); } catch{ throw new Error('Resposta invalida: '+text.slice(0,100)); }
+    if(!data.ok) throw new Error(data.error || 'Erro desconhecido');
+    return data;
+  }
+  // GET para ping e loadDB
   const p = new URLSearchParams({ token: SHEETS_TOKEN, action: payload.action||'' });
-  if(payload.db) p.append('db', encodeURIComponent(payload.db));
   const res = await fetch(SHEETS_URL + '?' + p.toString(), { redirect:'follow' });
   if(!res.ok) throw new Error('HTTP '+res.status);
   const text = await res.text();
